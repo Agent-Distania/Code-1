@@ -22,20 +22,14 @@
       "next": "outbreak_worsens"
     }
   ],
-
   "branches": {
     "nuclear_epilogue": {
-      "introText": "The detonation has contained the supernatural outbreak but at a terrible cost.\n\n" +
-                   "Most of the lab personnel were lost in the blast. Tens of thousands have been displaced due to radioactive fallout. The surrounding city lies in ruins.\n\n" +
-                   "You saved the nation from a global catastrophe, but the price will haunt you and the world for decades.\n\n--- MISSION COMPLETE ---",
+      "introText": "The detonation has contained the supernatural outbreak but at a terrible cost.\n\nMost of the lab personnel were lost in the blast. Tens of thousands have been displaced due to radioactive fallout. The surrounding city lies in ruins.\n\nYou saved the nation from a global catastrophe, but the price will haunt you and the world for decades.\n\n--- MISSION COMPLETE ---",
       "choices": []
     },
-
     "outbreak_worsens": {
-      "introText": "Without the nuclear option, the outbreak has spread uncontrollably.\n\n" +
-                   "The containment breach is now a global emergency.\n\n--- MISSION FAILED ---",
+      "introText": "Without the nuclear option, the outbreak has spread uncontrollably.\n\nThe containment breach is now a global emergency.\n\n--- MISSION FAILED ---",
       "choices": []
     }
   }
 }
-
