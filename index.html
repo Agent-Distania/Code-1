@@ -261,6 +261,7 @@
       if (existing) existing.remove();
     }
 
+    // We only disable input on game over
     function disableInput(inputEl) {
       inputEl.disabled = true;
       inputEl.style.opacity = '.6';
@@ -364,20 +365,20 @@
             addUserEcho('deploy soldiers');
             addStyledMessage('Foxtrot-1', 'Platoon mobilized, lethal force authorized');
             enterDeploySoldiersBranch();
-            disableInput(input);
+            // input stays enabled
           } else if (val === 'nuclear') {
             gameState.choiceMade = true;
             gameState.gameOver = true;
             addUserEcho('nuclear');
             addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
             showCredits();
-            disableInput(input);
+            disableInput(input); // only disable on game over
           } else if (val === 'attempt containment') {
             gameState.choiceMade = true;
             gameState.branch = 'containment';
             addUserEcho('attempt containment');
             addStyledMessage('Foxtrot-1', 'Understood, deploying remaining forces for attempted containment');
-            disableInput(input);
+            // input stays enabled
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
@@ -432,28 +433,22 @@
             gameState.choiceMade = true;
             gameState.morale -= 15;
             addStyledMessage('Foxtrot-1', 'Fallback executed. Breach expanding. Command frustrated.');
-            // 30% chance of worse follow-up
             if (Math.random() < 0.3) {
               gameState.soldiers -= 20;
               gameState.morale -= 5;
               addStyledMessage('Foxtrot-1', 'Forces pulling back under heavy pressure. Situation worsening.');
             }
             showDeployStatus();
-            disableInput(input);
+            // input stays enabled
           } else if (val === 'secure the area') {
-  gameState.choiceMade = true;
-  gameState.morale += 5;
-  addStyledMessage('Foxtrot-1', 'Area secured. Forces holding strong. Casualties minimal.');
-  if (Math.random() < 0.3) {
-    gameState.supplies -= 10;
-    addStyledMessage('Foxtrot-1', 'Small ambush during security sweep, minimal casualties but supplies used.');
-  }
-  // DO NOT disable input here, allow player to keep typing or add next steps as needed
-  // disableInput(input);
-  // gameState.gameOver = true;
-  // showCredits();
-}
-
+            gameState.choiceMade = true;
+            gameState.morale += 5;
+            addStyledMessage('Foxtrot-1', 'Area secured. Forces holding strong. Casualties minimal.');
+            if (Math.random() < 0.3) {
+              gameState.supplies -= 10;
+              addStyledMessage('Foxtrot-1', 'Small ambush during security sweep, minimal casualties but supplies used.');
+            }
+            // input stays enabled
           } else if (val === 'search for intel') {
             gameState.choiceMade = true;
             if (Math.random() < 0.7) {
@@ -464,7 +459,7 @@
               addStyledMessage('Foxtrot-1', 'Intel search failed. Encountered heavy resistance, retreating with casualties.');
             }
             showDeployStatus();
-            disableInput(input);
+            // input stays enabled
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
