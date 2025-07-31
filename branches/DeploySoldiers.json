@@ -200,6 +200,16 @@
             "personnel": 0
           },
           "next": "fallback_point"
+        },
+        {
+          "command": "call for reinforcements",
+          "message": "You radio in for immediate reinforcements before committing further.",
+          "effect": {
+            "morale": 1,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "waiting_backup"
         }
       ]
     },
@@ -226,6 +236,16 @@
             "personnel": 0
           },
           "next": "evac_ready"
+        },
+        {
+          "command": "counterattack",
+          "message": "You launch a short, sharp counterattack to push the threat back and buy more time.",
+          "effect": {
+            "morale": 2,
+            "supplies": -15,
+            "personnel": -3
+          },
+          "next": "ambush_alert"
         }
       ]
     },
@@ -304,6 +324,16 @@
             "personnel": 0
           },
           "next": "ambush_alert"
+        },
+        {
+          "command": "use as bait",
+          "message": "You rig the traps as bait and prepare a follow-up strike on drawn enemies.",
+          "effect": {
+            "morale": 4,
+            "supplies": -10,
+            "personnel": -2
+          },
+          "next": "ambush_alert"
         }
       ]
     },
@@ -319,7 +349,7 @@
             "supplies": -15,
             "personnel": 0
           },
-          "next": "mission_end"
+          "next": "evac_complete"
         },
         {
           "command": "hold position",
@@ -329,7 +359,17 @@
             "supplies": -20,
             "personnel": -10
           },
-          "next": "mission_end"
+          "next": "last_stand"
+        },
+        {
+          "command": "fallback",
+          "message": "You pull back to a secondary fallback to stabilize the situation.",
+          "effect": {
+            "morale": 1,
+            "supplies": -8,
+            "personnel": 0
+          },
+          "next": "fallback_point"
         }
       ]
     },
@@ -345,7 +385,7 @@
             "supplies": -25,
             "personnel": -15
           },
-          "next": "mission_end"
+          "next": "mission_end_aggressive"
         },
         {
           "command": "avoid nests",
@@ -355,7 +395,17 @@
             "supplies": -10,
             "personnel": 0
           },
-          "next": "mission_end"
+          "next": "mission_end_cautious"
+        },
+        {
+          "command": "gather intel",
+          "message": "You attempt stealthy intelligence gathering to plan a better assault later.",
+          "effect": {
+            "morale": 1,
+            "supplies": -5,
+            "personnel": -2
+          },
+          "next": "mission_continue"
         }
       ]
     },
@@ -371,7 +421,7 @@
             "supplies": -5,
             "personnel": 0
           },
-          "next": "mission_end"
+          "next": "evac_complete"
         },
         {
           "command": "fallback",
@@ -381,7 +431,17 @@
             "supplies": -8,
             "personnel": 0
           },
-          "next": "mission_end"
+          "next": "evac_complete"
+        },
+        {
+          "command": "split extraction",
+          "message": "You evacuate part of the squad now while others hold, risking fragmentation.",
+          "effect": {
+            "morale": 0,
+            "supplies": -5,
+            "personnel": -3
+          },
+          "next": "evac_complete"
         }
       ]
     },
@@ -423,7 +483,7 @@
             "supplies": -25,
             "personnel": -20
           },
-          "next": "mission_end"
+          "next": "mission_failure"
         },
         {
           "command": "set charges",
@@ -433,13 +493,111 @@
             "supplies": -20,
             "personnel": -5
           },
-          "next": "mission_end"
+          "next": "mission_success"
+        },
+        {
+          "command": "observe",
+          "message": "You hold back to study nest behavior, hoping for a safer window.",
+          "effect": {
+            "morale": 1,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "mission_continue"
         }
       ]
     },
 
-    "mission_end": {
-      "introText": "Mission status: Completed. Your command has ended. Review the outcome and prepare for debrief.",
+    "last_stand": {
+      "introText": "Delta squad is pinned down, outnumbered. This could be their final stand.",
+      "choices": [
+        {
+          "command": "fight to the end",
+          "message": "You order the squad to hold and fight, embracing whatever outcome comes.",
+          "effect": {
+            "morale": -10,
+            "supplies": -30,
+            "personnel": -25
+          },
+          "next": "mission_failure"
+        },
+        {
+          "command": "sacrifice rear guard",
+          "message": "You pull most of the squad back while leaving a rear guard to delay the enemy.",
+          "effect": {
+            "morale": 2,
+            "supplies": -10,
+            "personnel": -10
+          },
+          "next": "evac_complete"
+        }
+      ]
+    },
+
+    "mission_end_aggressive": {
+      "introText": "The aggressive strike hits hard. You either shattered the nests or overextended and opened new vulnerabilities.",
+      "choices": [
+        {
+          "command": "assess outcome",
+          "message": "You evaluate losses and see if the breach is contained.",
+          "effect": {
+            "morale": 0,
+            "supplies": 0,
+            "personnel": 0
+          },
+          "next": "mission_success"
+        },
+        {
+          "command": "brace for counter",
+          "message": "The enemies regroup and strike back; your overreach left you exposed.",
+          "effect": {
+            "morale": -5,
+            "supplies": -15,
+            "personnel": -10
+          },
+          "next": "mission_failure"
+        }
+      ]
+    },
+
+    "mission_end_cautious": {
+      "introText": "By avoiding direct confrontation, you preserved forces but let the threat persist in shadows.",
+      "choices": [
+        {
+          "command": "delay",
+          "message": "You buy time to plan a better offensive.",
+          "effect": {
+            "morale": 1,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "mission_continue"
+        },
+        {
+          "command": "evacuate",
+          "message": "You decide the risk is too high and pull the squad back.",
+          "effect": {
+            "morale": -2,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "evac_complete"
+        }
+      ]
+    },
+
+    "mission_success": {
+      "introText": "Mission Success. The nest is destroyed or contained, and Delta squad extracts with survivors. Your leadership made the difference.",
+      "choices": []
+    },
+
+    "mission_failure": {
+      "introText": "Mission Failure. Delta squad was overwhelmed, and the outbreak accelerates. Command will review what went wrong.",
+      "choices": []
+    },
+
+    "evac_complete": {
+      "introText": "Evacuation complete. Delta squad survives, but the threat remains uncontained. The mission is deferred.",
       "choices": []
     }
   }
