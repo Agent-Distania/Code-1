@@ -38,7 +38,6 @@
   </div>
 
   <script>
-    // Cached DOM elements and base game state setup
     const terminal = document.getElementById('terminal');
     const statusPanel = document.getElementById('status-panel');
     const moraleBar = document.getElementById('morale-bar').querySelector('.bar-inner');
@@ -57,7 +56,6 @@
       statusVisible: false
     };
 
-    // The Code-1 menu data (not fetched, hardcoded here)
     const code1Menu = {
       introText: 'CODE-1 TERMINAL ACCESS',
       choices: [
@@ -162,17 +160,13 @@
       scrollToBottom();
     }
 
-    // New function: show game over screen after end of branch
     function showGameOver() {
       gameState.gameOver = true;
       const gameOverMsg = document.createElement('div');
       gameOverMsg.className = 'line alert-red';
       gameOverMsg.textContent = '--- MISSION COMPLETE --- GAME OVER ---';
       terminal.appendChild(gameOverMsg);
-
-      const restartBtn = createRestartButton();
-      terminal.appendChild(restartBtn);
-
+      terminal.appendChild(createRestartButton());
       scrollToBottom();
     }
 
@@ -186,6 +180,7 @@
         err.className = 'line alert-red';
         err.textContent = 'ERROR: Unable to load branch';
         terminal.appendChild(err);
+        scrollToBottom();
       }
     }
 
@@ -193,7 +188,7 @@
       terminal.innerHTML = '';
       updateBars();
 
-      if (branch === code1Menu) {
+      if (branch.introText === code1Menu.introText) {
         const alertMsg = document.createElement('div');
         alertMsg.className = 'line alert-red';
         alertMsg.textContent = 'FATAL CONTAINMENT BREACH AT SIERRA LAB. THE FATE OF THE NATION, POSSIBLY THE WORLD, RESTS ON YOUR CHOICES.';
@@ -205,7 +200,6 @@
       intro.textContent = branch.introText;
       terminal.appendChild(intro);
 
-      // If no choices, show game over and return early
       if (!branch.choices || branch.choices.length === 0) {
         showGameOver();
         return;
@@ -235,20 +229,22 @@
           if (match) {
             addUserEcho(val);
             addStyledMessage('Sierra Command', match.message);
+            disableInput(input);
 
-            if (branch === code1Menu) {
-              // User picked mission from menu — load JSON branch file
-              disableInput(input);
-              const branchFileName = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
+            if (branch.introText === code1Menu.introText) {
+              const branchFileName = val.replace(/\s+/g, '');
               loadBranchJSON(branchFileName);
             } else {
-              // Gameplay inside branch, update state
               gameState.morale += match.effect?.morale || 0;
               gameState.supplies += match.effect?.supplies || 0;
               gameState.soldiers += match.effect?.personnel || 0;
               updateBars();
-              disableInput(input);
-              showCredits();
+
+              if (match.next) {
+                runBranch(branch.branches?.[match.next] || { introText: 'ERROR: Missing sub-branch.', choices: [] });
+              } else {
+                showCredits();
+              }
             }
           } else {
             const unknown = document.createElement('div');
