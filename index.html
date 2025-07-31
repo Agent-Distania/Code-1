@@ -5,24 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Military Terminal</title>
 <style>
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
-
   body {
     margin: 0;
     height: 100vh;
     background: #0b1a0b;
     color: #39ff14;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Courier New', monospace;
     font-size: 18px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-
-  .terminal {
+  #terminal {
     background: #001100;
     border: 2px solid #39ff14;
     padding: 20px;
@@ -33,53 +27,37 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    overflow-y: auto;
   }
-
   .line {
     white-space: pre-wrap;
     line-height: 1.4;
   }
-
   .input-line {
     display: flex;
     align-items: center;
   }
-
   .prompt {
     user-select: none;
     margin-right: 10px;
   }
-
-  .cursor {
-    width: 10px;
-    background-color: #39ff14;
-    animation: blink 1s step-start infinite;
-    margin-left: 2px;
-    height: 24px;
-  }
-
   input {
     background: transparent;
     border: none;
     outline: none;
     color: #39ff14;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Courier New', monospace;
     font-size: 18px;
     flex-grow: 1;
+  }
+  .alert-red {
+    color: #ff4444;
+    font-weight: bold;
   }
 </style>
 </head>
 <body>
-  <div class="terminal" id="terminal">
-    <div class="line">*** MILITARY TERMINAL ACCESS ***</div>
-    <div class="line">Please enter command:</div>
-    <div class="input-line">
-      <span class="prompt">C:\></span>
-      <input type="text" id="terminal-input" autofocus autocomplete="off" />
-      <div class="cursor"></div>
-    </div>
-  </div>
-
+<div id="terminal"></div>
 <script>
   const terminal = document.getElementById('terminal');
 
@@ -94,42 +72,36 @@
     const input = document.createElement('input');
     input.type = 'text';
     input.id = inputId;
-    input.autofocus = true;
     input.autocomplete = 'off';
-
-    const cursor = document.createElement('div');
-    cursor.className = 'cursor';
 
     inputLine.appendChild(prompt);
     inputLine.appendChild(input);
-    inputLine.appendChild(cursor);
+
+    setTimeout(() => input.focus(), 50);
 
     return { inputLine, input };
   }
 
-  function initMainTerminal() {
+  function initMain() {
     terminal.innerHTML = '';
+    const title = document.createElement('div');
+    title.className = 'line';
+    title.textContent = '*** MILITARY TERMINAL ACCESS ***';
+    terminal.appendChild(title);
 
-    const titleLine = document.createElement('div');
-    titleLine.className = 'line';
-    titleLine.textContent = '*** MILITARY TERMINAL ACCESS ***';
+    const instruction = document.createElement('div');
+    instruction.className = 'line';
+    instruction.textContent = 'Please enter command:';
+    terminal.appendChild(instruction);
 
-    const instructionLine = document.createElement('div');
-    instructionLine.className = 'line';
-    instructionLine.textContent = 'Please enter command:';
-
-    terminal.appendChild(titleLine);
-    terminal.appendChild(instructionLine);
-
-    const { inputLine, input } = createInputLine('C:\\>', 'terminal-input');
+    const { inputLine, input } = createInputLine('C:\\>', 'main-input');
     terminal.appendChild(inputLine);
-    input.focus();
 
     input.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         const command = input.value.trim().toLowerCase();
         if (command === 'code-1') {
-          initCode1Terminal();
+          initCode1();
         } else {
           addLine(`Unknown command: ${command}`);
         }
@@ -142,51 +114,50 @@
     const line = document.createElement('div');
     line.className = 'line';
     line.textContent = text;
-    // Insert above the last input line
     const inputLine = terminal.querySelector('.input-line');
     terminal.insertBefore(line, inputLine);
   }
 
-function initCode1() {
-  terminal.innerHTML = '';
-  const title = document.createElement('div');
-  title.className = 'line';
-  title.textContent = '*** CODE-1 TERMINAL ***';
-  terminal.appendChild(title);
+  function initCode1() {
+    terminal.innerHTML = '';
 
-  const alertMsg = document.createElement('div');
-  alertMsg.className = 'line';
-  alertMsg.textContent = 'Breach at the Sierra labs, containment impossible, you have the key, deploy soldiers, or nuclear weapons';
-  terminal.appendChild(alertMsg);
+    const title = document.createElement('div');
+    title.className = 'line';
+    title.textContent = '*** CODE-1 TERMINAL ***';
+    terminal.appendChild(title);
 
-  const welcome = document.createElement('div');
-  welcome.className = 'line';
-  welcome.textContent = 'Welcome to CODE-1 interface.';
-  terminal.appendChild(welcome);
+    const alertMsg = document.createElement('div');
+    alertMsg.className = 'line alert-red';
+    alertMsg.textContent = 'Sierra command: Breach at the Sierra labs, containment impossible, you have the key, deploy soldiers, or nuclear weapons';
+    terminal.appendChild(alertMsg);
 
-  const { inputLine, input } = createInputLine('CODE-1>', 'code1-input');
-  terminal.appendChild(inputLine);
+    const welcome = document.createElement('div');
+    welcome.className = 'line';
+    welcome.textContent = 'Welcome to CODE-1 interface.';
+    terminal.appendChild(welcome);
 
-  setTimeout(() => input.focus(), 100);
+    const { inputLine, input } = createInputLine('CODE-1>', 'code1-input');
+    terminal.appendChild(inputLine);
 
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      const cmd = input.value.trim();
-      if (cmd) addCode1Line(`> ${cmd}`);
-      input.value = '';
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        if (cmd) addCode1Line(`> ${cmd}`);
+        input.value = '';
+      }
+    });
+
+    setTimeout(() => input.focus(), 50);
+
+    function addCode1Line(text) {
+      const line = document.createElement('div');
+      line.className = 'line';
+      line.textContent = text;
+      terminal.insertBefore(line, inputLine);
     }
-  });
-
-  function addCode1Line(text) {
-    const line = document.createElement('div');
-    line.className = 'line';
-    line.textContent = text;
-    terminal.insertBefore(line, inputLine);
   }
-}
 
-  // Initialize the main terminal on page load
-  initMainTerminal();
+  initMain();
 </script>
 </body>
 </html>
