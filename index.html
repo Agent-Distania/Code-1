@@ -187,7 +187,7 @@
       </div>
       <div class="numeric-wrapper">
         <div class="numeric-row">
-          <div>Soldiers</div><div class="value-box" id="soldiers-value">200</div>
+          <div id="soldiers-label">Soldiers</div><div class="value-box" id="soldiers-value">200</div>
         </div>
       </div>
       <div class="small-note">Only first choice per branch accepted.</div>
@@ -200,6 +200,7 @@
   <script>
     const terminal = document.getElementById('terminal');
     const statusPanel = document.getElementById('status-panel');
+    const soldiersLabel = document.getElementById('soldiers-label');
     let gameState = {
       morale: 0,
       supplies: 100,
@@ -309,6 +310,10 @@
       gameState.gameOver = false;
       gameState.statusVisible = false;
       statusPanel.style.display = 'none';
+      soldiersLabel.textContent = 'Soldiers';  // Reset label
+      gameState.soldiers = 200;
+      gameState.supplies = 100;
+      gameState.morale = 0;
       updateBars();
 
       const title = document.createElement('div');
@@ -348,6 +353,10 @@
       gameState.branch = null;
       gameState.choiceMade = false;
       gameState.gameOver = false;
+      gameState.soldiers = 200;
+      gameState.supplies = 100;
+      gameState.morale = 0;
+      soldiersLabel.textContent = 'Soldiers';  // Reset label for this branch
       updateBars();
 
       const title = document.createElement('div');
@@ -403,7 +412,7 @@
             addUserEcho('deploy soldiers');
             addStyledMessage('Foxtrot-1', 'Platoon mobilized, lethal force authorized');
             enterDeploySoldiersBranch();
-          } else if (val === 'nuclear') {
+          } else if (val === 'nuclear warhead' || val === 'nuclear') {
             gameState.choiceMade = true;
             gameState.gameOver = true;
             addUserEcho('nuclear warhead');
@@ -412,9 +421,9 @@
             disableInput(input);
           } else if (val === 'attempt containment') {
             gameState.choiceMade = true;
-            gameState.branch = 'containment';
             addUserEcho('attempt containment');
-            addStyledMessage('Foxtrot-1', 'Understood, deploying remaining forces for attempted containment');
+            showStatusPanel();
+            initContainmentBranch();
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
@@ -516,20 +525,139 @@
       scrollToBottom();
     }
 
-    function showCredits() {
-      const credits = document.createElement('div');
-      credits.className = 'line credits';
-      credits.textContent = '--- GAME OVER ---  Made by Agent Distania';
-      terminal.appendChild(credits);
+    function initContainmentBranch() {
+      gameState.choiceMade = false;
+      gameState.branch = 'containment';
+      gameState.soldiers = 75; // now called guards
+      gameState.supplies = 68;
+      gameState.morale = 0;
+      updateBars();
 
-      // Add restart button
-      const restartBtn = createRestartButton();
-      terminal.appendChild(restartBtn);
+      terminal.innerHTML = '';
 
-      scrollToBottom();
+      // Show branch title and description
+      const title = document.createElement('div');
+      title.className = 'line';
+      title.textContent = '*** CODE-1 TERMINAL - CONTAINMENT BRANCH ***';
+      terminal.appendChild(title);
+
+      const alertDiv = document.createElement('div');
+      alertDiv.className = 'line alert-red';
+      alertDiv.textContent = 'Command Center: Containment breach active. Guards deployed to secure vital systems.';
+      terminal.appendChild(alertDiv);
+
+      // Show follow-up choices
+      const header = document.createElement('div');
+      header.className = 'line';
+      header.textContent = 'Choose your next action:';
+      terminal.appendChild(header);
+
+      const option1 = document.createElement('div');
+      option1.className = 'line';
+      option1.textContent = '1) reinforce perimeter';
+      terminal.appendChild(option1);
+
+      const option2 = document.createElement('div');
+      option2.className = 'line';
+      option2.textContent = '2) hack containment systems';
+      terminal.appendChild(option2);
+
+      const option3 = document.createElement('div');
+      option3.className = 'line';
+      option3.textContent = '3) evacuate non-essential personnel';
+      terminal.appendChild(option3);
+
+      const promptLine = document.createElement('div');
+      promptLine.className = 'line';
+      promptLine.textContent = 'Type your choice exactly and press Enter:';
+      terminal.appendChild(promptLine);
+
+      clearInputLine();
+      const { wrapper, input } = createInputLine('CODE-1>', 'containment-input');
+      terminal.appendChild(wrapper);
+
+      // Change status panel soldiers label to "Guards"
+      soldiersLabel.textContent = 'Guards';
+
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
+          const val = input.value.trim().toLowerCase();
+          addUserEcho(val);
+
+          if (val === 'reinforce perimeter') {
+            gameState.choiceMade = true;
+            gameState.morale += 10;
+            gameState.supplies -= 15;
+            addStyledMessage('Command', 'Perimeter reinforced. Guards holding lines but supplies heavily used.');
+            if (Math.random() < 0.4) {
+              gameState.soldiers -= 10;
+              addStyledMessage('Command', 'Small skirmishes occurred. Guard casualties reported.');
+            }
+          } else if (val === 'hack containment systems') {
+            gameState.choiceMade = true;
+            if (Math.random() < 0.7) {
+              gameState.morale += 15;
+              gameState.supplies -= 10;
+              addStyledMessage('Command', 'Containment systems successfully hacked. Breach partially sealed.');
+            } else {
+              gameState.morale -= 10;
+              addStyledMessage('Command', 'Hack attempt failed. Breach spreading faster.');
+              gameState.soldiers -= 15;
+            }
+          } else if (val === 'evacuate non-essential personnel') {
+            gameState.choiceMade = true;
+            gameState.morale -= 5;
+            gameState.supplies += 10;
+            addStyledMessage('Command', 'Non-essential personnel evacuated safely. Supplies conserved.');
+          } else {
+            const unknown = document.createElement('div');
+            unknown.className = 'line';
+            unknown.textContent = 'unrecognized command';
+            insertAboveInput(unknown);
+            input.value = '';
+            return;
+          }
+
+          updateBars();
+
+          if (gameState.soldiers <= 0 || gameState.supplies <= 0 || gameState.morale <= -50) {
+            gameState.gameOver = true;
+            addStyledMessage('System', 'Containment failed. Situation critical. Game over.');
+            showCredits();
+            disableInput(input);
+          } else {
+            addStyledMessage('System', 'Awaiting further orders...');
+            clearInputLine();
+            const { wrapper: newWrapper, input: newInput } = createInputLine('CODE-1>', 'containment-input');
+            terminal.appendChild(newWrapper);
+            newInput.focus();
+            gameState.choiceMade = false;
+
+            newInput.addEventListener('keydown', e => {
+              if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
+                addUserEcho(newInput.value);
+                addStyledMessage('System', 'No further actions implemented yet.');
+                disableInput(newInput);
+                showCredits();
+                gameState.gameOver = true;
+              }
+            });
+          }
+        }
+      });
     }
 
-    // bootstrap
+    function showCredits() {
+      const credits = document.createElement('div');
+      credits.className = 'credits';
+      credits.textContent = '© 2025 Noble Williams - Military Terminal Decision Game';
+      terminal.appendChild(credits);
+
+      const restartBtn = createRestartButton();
+      terminal.appendChild(restartBtn);
+    }
+
+    // Initialize main terminal on page load
     initMainTerminal();
   </script>
 </body>
