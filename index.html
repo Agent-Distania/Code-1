@@ -287,6 +287,11 @@
       if (existing) existing.remove();
     }
 
+    function disableInput(inputEl) {
+      inputEl.disabled = true;
+      inputEl.style.opacity = '.6';
+    }
+
     function initMainTerminal() {
       terminal.innerHTML = '';
       gameState.branch = null;
@@ -312,11 +317,13 @@
           addUserEcho(cmd);
           if (cmd === 'code-1') {
             initCode1Terminal();
+            disableInput(input); // disable old input as we switch terminal
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
-            unknown.textContent = `Unknown command: ${cmd}`;
+            unknown.textContent = 'unrecognized command';
             insertAboveInput(unknown);
+            // input stays enabled so user can try again
           }
           input.value = '';
           updateBars();
@@ -352,7 +359,7 @@
 
       const option2 = document.createElement('div');
       option2.className = 'line';
-      option2.textContent = '2) nuclear';
+      option2.textContent = '2) nuclear warhead';
       terminal.appendChild(option2);
 
       const option3 = document.createElement('div');
@@ -384,7 +391,7 @@
             addStyledMessage('Home 1', 'Platoon mobilized, lethal force authorized');
             enterDeploySoldiersBranch();
             disableInput(input);
-          } else if (val === 'nuclear') {
+          } else if (val === 'nuclear warhead') {
             gameState.choiceMade = true;
             addUserEcho('nuclear');
             addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
@@ -399,8 +406,9 @@
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
-            unknown.textContent = `Unknown choice: ${val}`;
+            unknown.textContent = 'unrecognized command';
             insertAboveInput(unknown);
+            // input stays enabled
           }
           input.value = '';
           updateBars();
@@ -449,7 +457,7 @@
             gameState.choiceMade = true;
             if (Math.random() < 0.6) {
               gameState.morale += 10;
-              addStyledMessage('Home 1', 'Advance successful. Recon completed, intel gathered. Morale boosted. Force integrity nominal.');
+              addStyledMessage('Home 1', 'Advance successful. Recon completed, intel gathered. Morale boosted.');
             } else {
               gameState.soldiers -= 40;
               gameState.morale -= 10;
@@ -466,8 +474,11 @@
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
-            unknown.textContent = `Unknown follow-up choice: ${val}`;
+            unknown.textContent = 'unrecognized command';
             insertAboveInput(unknown);
+            // input stays enabled
+            input.value = '';
+            return; // skip disabling input
           }
           input.value = '';
           disableInput(input);
@@ -475,11 +486,6 @@
           showDeployStatus();
         }
       });
-    }
-
-    function disableInput(inputEl) {
-      inputEl.disabled = true;
-      inputEl.style.opacity = '.6';
     }
 
     function showCredits() {
