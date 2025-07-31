@@ -147,39 +147,43 @@
     terminal.insertBefore(line, inputLine);
   }
 
-  function initCode1Terminal() {
-    terminal.innerHTML = '';
+function initCode1() {
+  terminal.innerHTML = '';
+  const title = document.createElement('div');
+  title.className = 'line';
+  title.textContent = '*** CODE-1 TERMINAL ***';
+  terminal.appendChild(title);
 
-    const titleLine = document.createElement('div');
-    titleLine.className = 'line';
-    titleLine.textContent = '*** CODE-1 TERMINAL ***';
+  const alertMsg = document.createElement('div');
+  alertMsg.className = 'line';
+  alertMsg.textContent = 'Breach at the Sierra labs, containment impossible, you have the key, deploy soldiers, or nuclear weapons';
+  terminal.appendChild(alertMsg);
 
-    const welcomeLine = document.createElement('div');
-    welcomeLine.className = 'line';
-    welcomeLine.textContent = 'Welcome to CODE-1 interface.';
+  const welcome = document.createElement('div');
+  welcome.className = 'line';
+  welcome.textContent = 'Welcome to CODE-1 interface.';
+  terminal.appendChild(welcome);
 
-    terminal.appendChild(titleLine);
-    terminal.appendChild(welcomeLine);
+  const { inputLine, input } = createInputLine('CODE-1>', 'code1-input');
+  terminal.appendChild(inputLine);
 
-    const { inputLine, input } = createInputLine('CODE-1>', 'code1-input');
-    terminal.appendChild(inputLine);
-    input.focus();
+  setTimeout(() => input.focus(), 100);
 
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        const cmd = input.value.trim();
-        if (cmd) addCode1Line(`> ${cmd}`);
-        input.value = '';
-      }
-    });
-
-    function addCode1Line(text) {
-      const line = document.createElement('div');
-      line.className = 'line';
-      line.textContent = text;
-      terminal.insertBefore(line, inputLine);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const cmd = input.value.trim();
+      if (cmd) addCode1Line(`> ${cmd}`);
+      input.value = '';
     }
+  });
+
+  function addCode1Line(text) {
+    const line = document.createElement('div');
+    line.className = 'line';
+    line.textContent = text;
+    terminal.insertBefore(line, inputLine);
   }
+}
 
   // Initialize the main terminal on page load
   initMainTerminal();
