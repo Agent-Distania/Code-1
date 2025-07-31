@@ -164,6 +164,46 @@
             "guards": 0
           },
           "next": "hallway_breach"
+        },
+        {
+          "command": "ventilate briefly",
+          "message": "You open a controlled venting cycle to ease discomfort, risking a small breach but maintaining guard performance.",
+          "effect": {
+            "morale": 1,
+            "supplies": -4,
+            "guards": 0
+          },
+          "next": "hallway_breach"
+        },
+        {
+          "command": "wait and listen",
+          "message": "You hold position, hoping the sound was a feint. Patience either reveals the enemy or lets them prepare.",
+          "effect": {
+            "morale": 0,
+            "supplies": -2,
+            "guards": 0
+          },
+          "next": "hallway_encounter"
+        },
+        {
+          "command": "push forward blindly",
+          "message": "You ignore the discomfort and press deeper, hoping to capitalize—only to trigger a catastrophic ambush.",
+          "effect": {
+            "morale": -5,
+            "supplies": -10,
+            "guards": -6
+          },
+          "next": "game_over_failure"
+        },
+        {
+          "command": "call for extraction",
+          "message": "You decide the risk is too great; you order an immediate extraction while the sealing holds.",
+          "effect": {
+            "morale": 3,
+            "supplies": -5,
+            "guards": 0
+          },
+          "next": "game_over_evacuate"
         }
       ]
     },
@@ -190,6 +230,46 @@
             "guards": 0
           },
           "next": "trap_patience"
+        },
+        {
+          "command": "lay low",
+          "message": "You let the traps do their work fully, then quietly shift forces around the perimeter to prevent a counterstrike.",
+          "effect": {
+            "morale": 1,
+            "supplies": -3,
+            "guards": 0
+          },
+          "next": "unnerving_find"
+        },
+        {
+          "command": "call in artillery",
+          "message": "You mark the stunned area and call for heavy ordnance to collapse the corridor, risking collateral but aiming to end the threat cleanly.",
+          "effect": {
+            "morale": 4,
+            "supplies": -18,
+            "guards": -3
+          },
+          "next": "explosive_outcome"
+        },
+        {
+          "command": "overwhelm",
+          "message": "Riding the success of the traps, you push deep and aim to finish the breach now.",
+          "effect": {
+            "morale": 5,
+            "supplies": -15,
+            "guards": -4
+          },
+          "next": "explosive_outcome"
+        },
+        {
+          "command": "rush recklessly",
+          "message": "You send everyone in too fast, exposing flanks despite trap success.",
+          "effect": {
+            "morale": -3,
+            "supplies": -10,
+            "guards": -5
+          },
+          "next": "game_over_failure"
         }
       ]
     },
@@ -216,6 +296,46 @@
             "guards": 0
           },
           "next": "fallback_safety"
+        },
+        {
+          "command": "withdraw and reassess",
+          "message": "After the ambush is set, you pull back slightly to watch enemy reactions and adjust the plan based on what shows.",
+          "effect": {
+            "morale": 2,
+            "supplies": -5,
+            "guards": 0
+          },
+          "next": "silent_tension"
+        },
+        {
+          "command": "signal retreat",
+          "message": "You spring the ambush but quietly signal a fallback, turning it into a guerrilla hit-and-run that either frustrates the enemy or leaves you exposed.",
+          "effect": {
+            "morale": 3,
+            "supplies": -8,
+            "guards": -2
+          },
+          "next": "fallback_safety"
+        },
+        {
+          "command": "all-in assault",
+          "message": "You order the squad to commit everything to the ambush, risking everything for a decisive strike.",
+          "effect": {
+            "morale": 6,
+            "supplies": -15,
+            "guards": -5
+          },
+          "next": "desperate_fight"
+        },
+        {
+          "command": "clean sweep",
+          "message": "You capitalize perfectly on the ambush, turning it into a full containment.",
+          "effect": {
+            "morale": 7,
+            "supplies": -10,
+            "guards": -2
+          },
+          "next": "explosive_outcome"
         }
       ]
     },
@@ -242,6 +362,46 @@
             "guards": -3
           },
           "next": "rescue_mission"
+        },
+        {
+          "command": "send decoy",
+          "message": "You prepare a small decoy force to draw attention while the main squad holds position, buying time for backup.",
+          "effect": {
+            "morale": -1,
+            "supplies": -5,
+            "guards": -1
+          },
+          "next": "creature_aftermath"
+        },
+        {
+          "command": "signal withdrawal",
+          "message": "You decide that waiting is too dangerous and begin a phased retreat, preserving remaining forces at the cost of ground.",
+          "effect": {
+            "morale": 1,
+            "supplies": -4,
+            "guards": 0
+          },
+          "next": "game_over_evacuate"
+        },
+        {
+          "command": "hold until arrival",
+          "message": "You stubbornly hold position, hoping backup arrives in time. The enemy overwhelms you if delayed.",
+          "effect": {
+            "morale": -4,
+            "supplies": -10,
+            "guards": -6
+          },
+          "next": "game_over_failure"
+        },
+        {
+          "command": "coordinate strike",
+          "message": "Backup arrives in time and you launch a coordinated offensive.",
+          "effect": {
+            "morale": 6,
+            "supplies": -12,
+            "guards": -2
+          },
+          "next": "explosive_outcome"
         }
       ]
     },
@@ -268,6 +428,46 @@
             "guards": 0
           },
           "next": "provoked_attack"
+        },
+        {
+          "command": "probe enemy",
+          "message": "You send a quiet recon team to test enemy reactions—if successful, you can turn the defense into opportunity.",
+          "effect": {
+            "morale": 2,
+            "supplies": -6,
+            "guards": -1
+          },
+          "next": "attack_launched"
+        },
+        {
+          "command": "conserve and wait",
+          "message": "You hold the line and conserve resources, hoping the enemy loses momentum. It either buys time or lets them regroup stronger.",
+          "effect": {
+            "morale": 1,
+            "supplies": -2,
+            "guards": 0
+          },
+          "next": "stand_ground"
+        },
+        {
+          "command": "stand ground",
+          "message": "You resolve to hold indefinitely. The delay costs you dearly, but the enemy eventually retreats—or overruns you.",
+          "effect": {
+            "morale": 2,
+            "supplies": -5,
+            "guards": -4
+          },
+          "next": "game_over_failure"
+        },
+        {
+          "command": "counterstrike",
+          "message": "You launch a preemptive counterattack from your prepared perimeter, catching the enemy off balance.",
+          "effect": {
+            "morale": 5,
+            "supplies": -15,
+            "guards": -3
+          },
+          "next": "explosive_outcome"
         }
       ]
     },
@@ -294,6 +494,46 @@
             "guards": 0
           },
           "next": "reassessment"
+        },
+        {
+          "command": "press hard",
+          "message": "You chase the retreating hostiles relentlessly, seeking to end the threat now.",
+          "effect": {
+            "morale": 4,
+            "supplies": -20,
+            "guards": -6
+          },
+          "next": "desperate_fight"
+        },
+        {
+          "command": "secure victory",
+          "message": "You consolidate gains, secure the area, and send a containment signal.",
+          "effect": {
+            "morale": 6,
+            "supplies": -10,
+            "guards": -2
+          },
+          "next": "explosive_outcome"
+        },
+        {
+          "command": "pull back and fortify",
+          "message": "You strike hard, then fall back to a defensible position to consolidate gains and prepare for the enemy’s reaction.",
+          "effect": {
+            "morale": 3,
+            "supplies": -10,
+            "guards": -1
+          },
+          "next": "reassessment"
+        },
+        {
+          "command": "bait and trap",
+          "message": "You feign retreat to lure enemies into a prepared kill zone—risky, but could net a decisive advantage.",
+          "effect": {
+            "morale": 5,
+            "supplies": -15,
+            "guards": -4
+          },
+          "next": "ambush_success"
         }
       ]
     },
@@ -632,6 +872,16 @@
             "guards": 0
           },
           "next": "game_over_failure"
+        },
+        {
+          "command": "pause mission",
+          "message": "You call for a brief ceasefire to reassess strategy without abandoning hope.",
+          "effect": {
+            "morale": 1,
+            "supplies": -2,
+            "guards": 0
+          },
+          "next": "reassessment"
         }
       ]
     },
@@ -658,6 +908,46 @@
             "guards": 0
           },
           "next": "fortified_position"
+        },
+        {
+          "command": "full offensive",
+          "message": "With wounded stabilized, you launch a decisive offensive to end the breach.",
+          "effect": {
+            "morale": 7,
+            "supplies": -15,
+            "guards": -3
+          },
+          "next": "explosive_outcome"
+        },
+        {
+          "command": "overextend",
+          "message": "You push too soon despite partial recovery, leading to a collapse under pressure.",
+          "effect": {
+            "morale": -4,
+            "supplies": -10,
+            "guards": -5
+          },
+          "next": "game_over_failure"
+        },
+        {
+          "command": "secure perimeter first",
+          "message": "You delay offensive action to ensure the area is safe for the recovering troops—this buys time but lets the threat organize.",
+          "effect": {
+            "morale": 2,
+            "supplies": -5,
+            "guards": 0
+          },
+          "next": "defense_ready"
+        },
+        {
+          "command": "split force",
+          "message": "You send part of the healed team forward while keeping a reserve; half-success comes with risk of fragmentation.",
+          "effect": {
+            "morale": 3,
+            "supplies": -8,
+            "guards": -2
+          },
+          "next": "dark_corridor"
         }
       ]
     },
@@ -736,6 +1026,32 @@
             "guards": -1
           },
           "next": "dark_corridor"
+        }
+      ]
+    },
+
+    "fortify_hold": {
+      "introText": "The guards double down on defenses, reinforcing weak points and setting additional traps. The immediate threat subsides, but the breach remains unstable.",
+      "choices": [
+        {
+          "command": "send scouts",
+          "message": "You dispatch scouts to probe enemy movement while holding the line.",
+          "effect": {
+            "morale": 2,
+            "supplies": -10,
+            "guards": -1
+          },
+          "next": "scout_report"
+        },
+        {
+          "command": "prepare counterstrike",
+          "message": "You ready a coordinated response for when the enemy resurfaces.",
+          "effect": {
+            "morale": 4,
+            "supplies": -8,
+            "guards": -2
+          },
+          "next": "ambush_set"
         }
       ]
     },
