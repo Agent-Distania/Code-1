@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Military Terminal - CODE-1 Alert</title>
+<title>Military Terminal - Decision Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   body {
@@ -20,10 +20,10 @@
     background: #001100;
     border: 2px solid #39ff14;
     padding: 16px;
-    width: 640px;
-    height: 440px;
+    width: 680px;
+    height: 480px;
     box-sizing: border-box;
-    box-shadow: 0 0 12px #39ff14;
+    box-shadow: 0 0 14px #39ff14;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -57,6 +57,16 @@
     border: 1px solid #ff4444;
     padding: 4px;
   }
+  .sender {
+    font-weight: bold;
+    margin-right: 4px;
+  }
+  .credits {
+    margin-top: 12px;
+    border-top: 1px solid #39ff14;
+    padding-top: 8px;
+    font-size: 14px;
+  }
 </style>
 </head>
 <body>
@@ -64,6 +74,7 @@
 
   <script>
     const terminal = document.getElementById('terminal');
+    let choiceMade = false;
 
     function createInputLine(promptText, inputId) {
       const wrapper = document.createElement('div');
@@ -81,9 +92,7 @@
       wrapper.appendChild(prompt);
       wrapper.appendChild(input);
 
-      // ensure focus after insertion
       setTimeout(() => input.focus(), 30);
-
       return { wrapper, input };
     }
 
@@ -97,11 +106,33 @@
       } else {
         terminal.appendChild(line);
       }
+      scrollToBottom();
+    }
+
+    function addStyledMessage(sender, message, senderLabelStyle = '') {
+      const container = document.createElement('div');
+      container.className = 'line';
+      const senderSpan = document.createElement('span');
+      senderSpan.className = 'sender';
+      senderSpan.textContent = sender + ':';
+      if (senderLabelStyle) senderSpan.style.cssText = senderLabelStyle;
+      container.appendChild(senderSpan);
+      const msgSpan = document.createElement('span');
+      msgSpan.textContent = ' ' + message;
+      container.appendChild(msgSpan);
+      const inputLine = terminal.querySelector('.input-line');
+      if (inputLine) terminal.insertBefore(container, inputLine);
+      else terminal.appendChild(container);
+      scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      terminal.scrollTop = terminal.scrollHeight;
     }
 
     function initMainTerminal() {
-      console.log('Initializing main terminal');
       terminal.innerHTML = '';
+      choiceMade = false;
       const title = document.createElement('div');
       title.className = 'line';
       title.textContent = '*** MILITARY TERMINAL ACCESS ***';
@@ -118,7 +149,6 @@
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
           const cmd = input.value.trim().toLowerCase();
-          console.log('Main command entered:', cmd);
           if (cmd === 'code-1') {
             initCode1Terminal();
           } else {
@@ -130,40 +160,92 @@
     }
 
     function initCode1Terminal() {
-      console.log('Loading CODE-1 terminal');
       terminal.innerHTML = '';
+      choiceMade = false;
 
       const title = document.createElement('div');
       title.className = 'line';
       title.textContent = '*** CODE-1 TERMINAL ***';
       terminal.appendChild(title);
 
-      // Alert message in red
+      // Alert message
       const alertDiv = document.createElement('div');
       alertDiv.className = 'line alert-red';
       alertDiv.textContent = 'Sierra command: Breach at the Sierra labs, containment impossible, you have the key, deploy soldiers, or nuclear weapons';
       terminal.appendChild(alertDiv);
 
-      const welcome = document.createElement('div');
-      welcome.className = 'line';
-      welcome.textContent = 'Welcome to CODE-1 interface.';
-      terminal.appendChild(welcome);
+      // Decision prompt
+      const decisionHeader = document.createElement('div');
+      decisionHeader.className = 'line';
+      decisionHeader.textContent = 'Select one:';
+      terminal.appendChild(decisionHeader);
+
+      const option1 = document.createElement('div');
+      option1.className = 'line';
+      option1.textContent = '1) deploy soldiers';
+      terminal.appendChild(option1);
+
+      const option2 = document.createElement('div');
+      option2.className = 'line';
+      option2.textContent = '2) nuclear';
+      terminal.appendChild(option2);
+
+      const option3 = document.createElement('div');
+      option3.className = 'line';
+      option3.textContent = '3) attempt containment';
+      terminal.appendChild(option3);
+
+      const spacer = document.createElement('div');
+      spacer.className = 'line';
+      spacer.textContent = '';
+      terminal.appendChild(spacer);
+
+      const promptLine = document.createElement('div');
+      promptLine.className = 'line';
+      promptLine.textContent = 'Type your choice exactly (e.g., "deploy soldiers") and press Enter:';
+      terminal.appendChild(promptLine);
 
       const { wrapper, input } = createInputLine('CODE-1>', 'code1-input');
       terminal.appendChild(wrapper);
 
       input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          const val = input.value.trim();
-          if (val) {
-            const echo = document.createElement('div');
-            echo.className = 'line';
-            echo.textContent = '> ' + val;
-            terminal.insertBefore(echo, wrapper);
+        if (e.key === 'Enter' && !choiceMade) {
+          const val = input.value.trim().toLowerCase();
+          if (val === 'deploy soldiers') {
+            choiceMade = true;
+            addStyledMessage('Home 1', 'Platoon mobilized, lethal force authorized');
+            addLineAboveInput('> deploy soldiers');
+            disableInput(input);
+          } else if (val === 'nuclear') {
+            choiceMade = true;
+            addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
+            addLineAboveInput('> nuclear');
+            showCredits();
+            disableInput(input);
+          } else if (val === 'attempt containment') {
+            choiceMade = true;
+            addStyledMessage('Sierra command', 'Understood, deploying remaining forces for attempted containment');
+            addLineAboveInput('> attempt containment');
+            disableInput(input);
+          } else {
+            addLineAboveInput(`Unknown choice: ${val}`);
           }
           input.value = '';
         }
       });
+    }
+
+    function disableInput(inputEl) {
+      inputEl.disabled = true;
+      inputEl.style.opacity = '0.6';
+    }
+
+    function showCredits() {
+      const credits = document.createElement('div');
+      credits.className = 'line credits';
+      credits.textContent = '--- GAME OVER ---  Made by Agent Distania';
+      terminal.appendChild(credits);
+      scrollToBottom();
     }
 
     // start
