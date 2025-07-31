@@ -190,22 +190,7 @@
       choiceMade: false
     };
 
-    const displayState = {
-      moralePercent: 50,  // Starting position for morale bar (neutral)
-      suppliesPercent: 100
-    };
-
-    function animateValue(key, from, to, onUpdate, duration = 500) {
-      const start = performance.now();
-      function step(now) {
-        const t = Math.min(1, (now - start) / duration);
-        const current = from + (to - from) * t; // linear easing
-        onUpdate(current);
-        if (t < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-
+    // UI updates for status panel
     function updateBars() {
       const moraleBar = document.getElementById('morale-bar');
       const suppliesBar = document.getElementById('supplies-bar');
@@ -213,23 +198,16 @@
       const suppliesValue = document.getElementById('supplies-value');
       const soldiersValue = document.getElementById('soldiers-value');
 
+      // Morale: centered at 0 => 50% plus/minus
       let moraleDisplay = Math.max(-100, Math.min(100, gameState.morale));
-      const targetMoralePercent = Math.max(0, Math.min(100, 50 + moraleDisplay / 2));
-      const targetSuppliesPercent = Math.max(0, Math.min(100, gameState.supplies));
-
-      animateValue('morale', displayState.moralePercent, targetMoralePercent, (val) => {
-        moraleBar.style.width = val + '%';
-      });
-      displayState.moralePercent = targetMoralePercent;
-
-      animateValue('supplies', displayState.suppliesPercent, targetSuppliesPercent, (val) => {
-        suppliesBar.style.width = val + '%';
-      });
-      displayState.suppliesPercent = targetSuppliesPercent;
-
+      const moralePercent = Math.max(0, Math.min(100, 50 + moraleDisplay / 2));
+      moraleBar.style.width = moralePercent + '%';
       moraleValue.textContent = (gameState.morale >= 0 ? '+' : '') + gameState.morale;
+
+      suppliesBar.style.width = Math.max(0, Math.min(100, gameState.supplies)) + '%';
       suppliesValue.textContent = Math.round(gameState.supplies) + '%';
-      soldiersValue.textContent = Math.round(gameState.soldiers);
+
+      soldiersValue.textContent = Math.max(0, Math.round(gameState.soldiers));
     }
 
     function createInputLine(promptText, inputId) {
@@ -317,13 +295,11 @@
           addUserEcho(cmd);
           if (cmd === 'code-1') {
             initCode1Terminal();
-            disableInput(input); // disable old input as we switch terminal
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
-            unknown.textContent = 'unrecognized command';
+            unknown.textContent = `Unknown command: ${cmd}`;
             insertAboveInput(unknown);
-            // input stays enabled so user can try again
           }
           input.value = '';
           updateBars();
@@ -359,7 +335,7 @@
 
       const option2 = document.createElement('div');
       option2.className = 'line';
-      option2.textContent = '2) nuclear warhead';
+      option2.textContent = '2) nuclear';
       terminal.appendChild(option2);
 
       const option3 = document.createElement('div');
@@ -388,10 +364,10 @@
             gameState.choiceMade = true;
             gameState.branch = 'deploy_soldiers';
             addUserEcho('deploy soldiers');
-            addStyledMessage('Home 1', 'Platoon mobilized, lethal force authorized');
+            addStyledMessage('Sierra command', 'Platoon mobilized, lethal force authorized');
             enterDeploySoldiersBranch();
             disableInput(input);
-          } else if (val === 'nuclear warhead') {
+          } else if (val === 'nuclear') {
             gameState.choiceMade = true;
             addUserEcho('nuclear');
             addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
@@ -406,9 +382,8 @@
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
-            unknown.textContent = 'unrecognized command';
+            unknown.textContent = `Unknown choice: ${val}`;
             insertAboveInput(unknown);
-            // input stays enabled
           }
           input.value = '';
           updateBars();
@@ -417,7 +392,7 @@
     }
 
     function enterDeploySoldiersBranch() {
-      gameState.choiceMade = false; // new sub-choice layer
+      gameState.choiceMade = false; // allow next choice
       updateBars();
 
       const header = document.createElement('div');
@@ -427,17 +402,17 @@
 
       const opt1 = document.createElement('div');
       opt1.className = 'line';
-      opt1.textContent = '1) advance to breach site';
+      opt1.textContent = '1) fallback';
       terminal.appendChild(opt1);
 
       const opt2 = document.createElement('div');
       opt2.className = 'line';
-      opt2.textContent = '2) secure perimeter';
+      opt2.textContent = '2) secure the area';
       terminal.appendChild(opt2);
 
       const opt3 = document.createElement('div');
       opt3.className = 'line';
-      opt3.textContent = '3) fallback';
+      opt3.textContent = '3) search for intel';
       terminal.appendChild(opt3);
 
       const promptLine = document.createElement('div');
@@ -453,47 +428,41 @@
         if (e.key === 'Enter' && !gameState.choiceMade) {
           const val = input.value.trim().toLowerCase();
           addUserEcho(val);
-          if (val === 'advance to breach site') {
-            gameState.choiceMade = true;
-            if (Math.random() < 0.6) {
-              gameState.morale += 10;
-              addStyledMessage('Home 1', 'Advance successful. Recon completed, intel gathered. Morale boosted.');
-            } else {
-              gameState.soldiers -= 40;
-              gameState.morale -= 10;
-              addStyledMessage('Home 1', 'Ambushed during advance. Heavy casualties. Soldiers lost, morale degraded.');
-            }
-          } else if (val === 'secure perimeter') {
-            gameState.choiceMade = true;
-            gameState.morale += 5;
-            addStyledMessage('Home 1', 'Perimeter secured. Forces holding. Casualties minimal.');
-          } else if (val === 'fallback') {
+
+          if (val === 'fallback') {
             gameState.choiceMade = true;
             gameState.morale -= 15;
-            addStyledMessage('Home 1', 'Fallback executed. Breach expanding. Command frustrated.');
+            addStyledMessage('Foxtrot-1', 'Fallback executed. Breach expanding. Command frustrated.');
+            addStyledMessage('Foxtrot-1', 'Forces pulling back under heavy pressure. Situation worsening.');
+          } else if (val === 'secure the area') {
+            gameState.choiceMade = true;
+            gameState.morale += 5;
+            addStyledMessage('Foxtrot-1', 'Area secured. Forces holding strong. Casualties minimal.');
+            addStyledMessage('Foxtrot-1', 'Perimeter stable. Holding position and ready for orders.');
+          } else if (val === 'search for intel') {
+            gameState.choiceMade = true;
+            if (Math.random() < 0.7) {
+              gameState.morale += 10;
+              addStyledMessage('Foxtrot-1', "Subjects 1-100 have proven fruitful in curing [EXPUNGED], however they have become uncontrollable, terminating subjects tomorrow when the cleaners return. The rest of the text is unreadable due to heavy blood. What the hell were they doing here?");
+            } else {
+              gameState.morale -= 5;
+              addStyledMessage('Foxtrot-1', 'Intel search failed. Encountered heavy resistance, retreating with casualties.');
+            }
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
             unknown.textContent = 'unrecognized command';
             insertAboveInput(unknown);
-            // input stays enabled
             input.value = '';
-            return; // skip disabling input
+            return; // keep input active
           }
+
           input.value = '';
           disableInput(input);
           updateBars();
           showDeployStatus();
         }
       });
-    }
-
-    function showCredits() {
-      const credits = document.createElement('div');
-      credits.className = 'line credits';
-      credits.textContent = '--- GAME OVER ---  Made by Agent Distania';
-      terminal.appendChild(credits);
-      scrollToBottom();
     }
 
     function showDeployStatus() {
@@ -504,7 +473,15 @@
       scrollToBottom();
     }
 
-    // start the game
+    function showCredits() {
+      const credits = document.createElement('div');
+      credits.className = 'line credits';
+      credits.textContent = '--- GAME OVER ---  Made by Agent Distania';
+      terminal.appendChild(credits);
+      scrollToBottom();
+    }
+
+    // start
     initMainTerminal();
   </script>
 </body>
