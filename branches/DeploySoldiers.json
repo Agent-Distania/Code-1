@@ -276,6 +276,32 @@
       ]
     },
 
+    "scan_results": {
+      "introText": "Scans reveal a nearby secondary nest and weak structural points. You can hit the nest now or fall back to reassess.",
+      "choices": [
+        {
+          "command": "hit nest",
+          "message": "You capitalize on the intel to strike the secondary nest decisively.",
+          "effect": {
+            "morale": 5,
+            "supplies": -20,
+            "personnel": -10
+          },
+          "next": "mission_success"
+        },
+        {
+          "command": "pull back",
+          "message": "You withdraw to consolidate and plan a safer assault.",
+          "effect": {
+            "morale": 1,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "mission_continue"
+        }
+      ]
+    },
+
     "creature_down": {
       "introText": "The creature is down but squad is exhausted and low on supplies.",
       "choices": [
