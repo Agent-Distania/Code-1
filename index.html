@@ -146,6 +146,23 @@
     font-size: 11px;
     opacity: .8;
   }
+  button.restart-btn {
+    margin-top: 16px;
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 3px;
+    align-self: flex-start;
+    transition: background 0.2s ease;
+  }
+  button.restart-btn:hover {
+    background: var(--green);
+    color: #001100;
+  }
 </style>
 </head>
 <body>
@@ -275,11 +292,23 @@
       }
     }
 
+    function createRestartButton() {
+      const btn = document.createElement('button');
+      btn.textContent = 'Restart';
+      btn.className = 'restart-btn';
+      btn.addEventListener('click', () => {
+        initMainTerminal();
+      });
+      return btn;
+    }
+
     function initMainTerminal() {
       terminal.innerHTML = '';
       gameState.branch = null;
       gameState.choiceMade = false;
       gameState.gameOver = false;
+      gameState.statusVisible = false;
+      statusPanel.style.display = 'none';
       updateBars();
 
       const title = document.createElement('div');
@@ -300,7 +329,7 @@
           const cmd = input.value.trim().toLowerCase();
           addUserEcho(cmd);
           if (cmd === 'code-1') {
-            showStatusPanel();  // Show status panel once code-1 is typed
+            showStatusPanel();
             initCode1Terminal();
           } else {
             const unknown = document.createElement('div');
@@ -492,6 +521,11 @@
       credits.className = 'line credits';
       credits.textContent = '--- GAME OVER ---  Made by Agent Distania';
       terminal.appendChild(credits);
+
+      // Add restart button
+      const restartBtn = createRestartButton();
+      terminal.appendChild(restartBtn);
+
       scrollToBottom();
     }
 
