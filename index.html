@@ -5,56 +5,113 @@
 <title>Military Terminal Decision Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
+  :root {
+    --green: #39ff14;
+    --red: #ff4444;
+    --bg: #001100;
+    --panel-bg: rgba(0, 17, 0, 0.9);
+    --bar-bg: #003300;
+  }
+  * { box-sizing: border-box; }
   body {
     margin: 0;
     height: 100vh;
     background: #0b1a0b;
-    color: #39ff14;
+    color: var(--green);
     font-family: 'Courier New', monospace;
-    font-size: 16px;
+    font-size: 14px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  #terminal {
+  #terminal-wrapper {
     background: #001100;
-    border: 2px solid #39ff14;
-    padding: 16px;
-    width: 680px;
-    height: 480px;
-    box-sizing: border-box;
-    box-shadow: 0 0 14px #39ff14;
+    border: 2px solid var(--green);
+    padding: 0;
+    width: 800px;
+    height: 520px;
+    box-shadow: 0 0 16px var(--green);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+  #status-panel {
+    width: 160px;
+    background: var(--panel-bg);
+    padding: 12px 8px;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    gap: 12px;
+    border-right: 1px solid var(--green);
+    flex-shrink: 0;
+  }
+  .status-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-align: center;
+    border-bottom: 1px solid var(--green);
+    padding-bottom: 4px;
+  }
+  .bar-wrapper {
+    display: flex;
+    flex-direction: column;
     gap: 4px;
+  }
+  .label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+  }
+  .bar {
+    position: relative;
+    height: 14px;
+    background: var(--bar-bg);
+    border: 1px solid var(--green);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .bar-inner {
+    height: 100%;
+    background: var(--green);
+    width: 100%;
+    transition: width .3s ease;
+  }
+  #terminal {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
   }
   .line {
     white-space: pre-wrap;
-    line-height: 1.3;
+    line-height: 1.2;
   }
   .input-line {
     display: flex;
     align-items: center;
-    margin-top: 4px;
+    margin-top: 6px;
   }
   .prompt {
     user-select: none;
     margin-right: 8px;
+    flex-shrink: 0;
   }
   input {
     background: transparent;
     border: none;
     outline: none;
-    color: #39ff14;
+    color: var(--green);
     font-family: 'Courier New', monospace;
-    font-size: 16px;
+    font-size: 14px;
     flex: 1;
   }
   .alert-red {
-    color: #ff4444;
+    color: var(--red);
     font-weight: bold;
-    border: 1px solid #ff4444;
+    border: 1px solid var(--red);
     padding: 4px;
   }
   .sender {
@@ -63,18 +120,70 @@
   }
   .credits {
     margin-top: 12px;
-    border-top: 1px solid #39ff14;
+    border-top: 1px solid var(--green);
     padding-top: 8px;
-    font-size: 14px;
+    font-size: 12px;
+  }
+  .small-note {
+    font-size: 11px;
+    opacity: .8;
   }
 </style>
 </head>
 <body>
-  <div id="terminal"></div>
+  <div id="terminal-wrapper">
+    <div id="status-panel">
+      <div class="status-title">STATUS</div>
+      <div class="bar-wrapper">
+        <div class="label-row">
+          <div>Morale</div><div id="morale-value">+0</div>
+        </div>
+        <div class="bar" aria-label="Morale">
+          <div class="bar-inner" id="morale-bar" style="width:100%;"></div>
+        </div>
+      </div>
+      <div class="bar-wrapper">
+        <div class="label-row">
+          <div>Supplies</div><div id="supplies-value">100%</div>
+        </div>
+        <div class="bar" aria-label="Supplies">
+          <div class="bar-inner" id="supplies-bar" style="width:100%;"></div>
+        </div>
+      </div>
+      <div class="small-note">Only first choice per branch accepted.</div>
+    </div>
+    <div id="terminal">
+      <!-- dynamic content injected here -->
+    </div>
+  </div>
 
   <script>
     const terminal = document.getElementById('terminal');
-    let choiceMade = false;
+    let gameState = {
+      morale: 0, // relative modifier
+      forceIntegrity: 100,
+      supplies: 100,
+      branch: null,
+      choiceMade: false
+    };
+
+    // UI updates for bars
+    function updateBars() {
+      const moraleBar = document.getElementById('morale-bar');
+      const suppliesBar = document.getElementById('supplies-bar');
+      const moraleValue = document.getElementById('morale-value');
+      const suppliesValue = document.getElementById('supplies-value');
+
+      // Cap for display (morale from -100 to +100 mapped to 0-100)
+      let moraleDisplay = Math.max(-100, Math.min(100, gameState.morale));
+      // We'll show + / - but bar fills relative to 50 + morale/2
+      const moralePercent = Math.max(0, Math.min(100, 50 + moraleDisplay / 2));
+      moraleBar.style.width = moralePercent + '%';
+      moraleValue.textContent = (gameState.morale >= 0 ? '+' : '') + gameState.morale;
+
+      suppliesBar.style.width = Math.max(0, Math.min(100, gameState.supplies)) + '%';
+      suppliesValue.textContent = Math.round(gameState.supplies) + '%';
+    }
 
     function createInputLine(promptText, inputId) {
       const wrapper = document.createElement('div');
@@ -91,8 +200,7 @@
 
       wrapper.appendChild(prompt);
       wrapper.appendChild(input);
-
-      setTimeout(() => input.focus(), 30);
+      setTimeout(() => input.focus(), 40);
       return { wrapper, input };
     }
 
@@ -127,9 +235,17 @@
       terminal.scrollTop = terminal.scrollHeight;
     }
 
+    function clearInputLine() {
+      const existing = terminal.querySelector('.input-line');
+      if (existing) existing.remove();
+    }
+
     function initMainTerminal() {
       terminal.innerHTML = '';
-      choiceMade = false;
+      gameState.branch = null;
+      gameState.choiceMade = false;
+      updateBars();
+
       const title = document.createElement('div');
       title.className = 'line';
       title.textContent = '*** MILITARY TERMINAL ACCESS ***';
@@ -162,20 +278,20 @@
 
     function initCode1Terminal() {
       terminal.innerHTML = '';
-      choiceMade = false;
+      gameState.branch = null;
+      gameState.choiceMade = false;
+      updateBars();
 
       const title = document.createElement('div');
       title.className = 'line';
       title.textContent = '*** CODE-1 TERMINAL ***';
       terminal.appendChild(title);
 
-      // Alert message
       const alertDiv = document.createElement('div');
       alertDiv.className = 'line alert-red';
       alertDiv.textContent = 'Sierra command: Breach at the Sierra labs, containment impossible, you have the key, deploy soldiers, or nuclear weapons';
       terminal.appendChild(alertDiv);
 
-      // Decision prompt
       const decisionHeader = document.createElement('div');
       decisionHeader.className = 'line';
       decisionHeader.textContent = 'Select one:';
@@ -206,25 +322,30 @@
       promptLine.textContent = 'Type your choice exactly (e.g., "deploy soldiers") and press Enter:';
       terminal.appendChild(promptLine);
 
+      clearInputLine();
       const { wrapper, input } = createInputLine('CODE-1>', 'code1-input');
       terminal.appendChild(wrapper);
 
       input.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && !choiceMade) {
+        if (e.key === 'Enter' && !gameState.choiceMade) {
           const val = input.value.trim().toLowerCase();
           if (val === 'deploy soldiers') {
-            choiceMade = true;
+            gameState.choiceMade = true;
+            gameState.branch = 'deploy_soldiers';
             addUserEcho('deploy soldiers');
             addStyledMessage('Home 1', 'Platoon mobilized, lethal force authorized');
+            // proceed into follow-up branch
+            enterDeploySoldiersBranch();
             disableInput(input);
           } else if (val === 'nuclear') {
-            choiceMade = true;
+            gameState.choiceMade = true;
             addUserEcho('nuclear');
             addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
             showCredits();
             disableInput(input);
           } else if (val === 'attempt containment') {
-            choiceMade = true;
+            gameState.choiceMade = true;
+            gameState.branch = 'containment';
             addUserEcho('attempt containment');
             addStyledMessage('Sierra command', 'Understood, deploying remaining forces for attempted containment');
             disableInput(input);
@@ -235,13 +356,87 @@
             insertAboveInput(unknown);
           }
           input.value = '';
+          updateBars();
+        }
+      });
+    }
+
+    function enterDeploySoldiersBranch() {
+      // follow-up after deploy soldiers
+      gameState.choiceMade = false; // new layer
+      updateBars();
+
+      // expose follow-up options
+      const header = document.createElement('div');
+      header.className = 'line';
+      header.textContent = 'Follow-up orders:';
+      terminal.appendChild(header);
+
+      const opt1 = document.createElement('div');
+      opt1.className = 'line';
+      opt1.textContent = '1) advance to breach site';
+      terminal.appendChild(opt1);
+
+      const opt2 = document.createElement('div');
+      opt2.className = 'line';
+      opt2.textContent = '2) secure perimeter';
+      terminal.appendChild(opt2);
+
+      const opt3 = document.createElement('div');
+      opt3.className = 'line';
+      opt3.textContent = '3) fallback';
+      terminal.appendChild(opt3);
+
+      const promptLine = document.createElement('div');
+      promptLine.className = 'line';
+      promptLine.textContent = 'Type your choice exactly and press Enter:';
+      terminal.appendChild(promptLine);
+
+      // remove any previous input line and create new one
+      clearInputLine();
+      const { wrapper, input } = createInputLine('CODE-1>', 'deploy-input');
+      terminal.appendChild(wrapper);
+
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !gameState.choiceMade) {
+          const val = input.value.trim().toLowerCase();
+          addUserEcho(val);
+          if (val === 'advance to breach site') {
+            gameState.choiceMade = true;
+            // 60% success
+            if (Math.random() < 0.6) {
+              gameState.morale += 10;
+              addStyledMessage('Home 1', 'Advance successful. Recon completed, intel gathered. Morale boosted. Force integrity nominal.');
+            } else {
+              gameState.forceIntegrity -= 30;
+              gameState.morale -= 10;
+              addStyledMessage('Home 1', 'Ambushed during advance. Heavy casualties. Force integrity degraded.');
+            }
+          } else if (val === 'secure perimeter') {
+            gameState.choiceMade = true;
+            gameState.morale += 5;
+            addStyledMessage('Home 1', 'Perimeter secured. Forces holding. Casualties minimal.');
+          } else if (val === 'fallback') {
+            gameState.choiceMade = true;
+            gameState.morale -= 15;
+            addStyledMessage('Home 1', 'Fallback executed. Breach expanding. Command frustrated.');
+          } else {
+            const unknown = document.createElement('div');
+            unknown.className = 'line';
+            unknown.textContent = `Unknown follow-up choice: ${val}`;
+            insertAboveInput(unknown);
+          }
+          input.value = '';
+          disableInput(input);
+          updateBars();
+          showDeployStatus();
         }
       });
     }
 
     function disableInput(inputEl) {
       inputEl.disabled = true;
-      inputEl.style.opacity = '0.6';
+      inputEl.style.opacity = '.6';
     }
 
     function showCredits() {
@@ -252,6 +447,15 @@
       scrollToBottom();
     }
 
+    function showDeployStatus() {
+      const status = document.createElement('div');
+      status.className = 'line';
+      status.textContent = `STATUS -- Morale: ${gameState.morale >= 0 ? '+' : ''}${gameState.morale}, Force Integrity: ${gameState.forceIntegrity}%, Supplies: ${Math.round(gameState.supplies)}%`;
+      terminal.appendChild(status);
+      scrollToBottom();
+    }
+
+    // start
     initMainTerminal();
   </script>
 </body>
