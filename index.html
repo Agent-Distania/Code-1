@@ -38,7 +38,6 @@
   </div>
 
   <script>
-    // Cached DOM elements and base game state setup
     const terminal = document.getElementById('terminal');
     const statusPanel = document.getElementById('status-panel');
     const moraleBar = document.getElementById('morale-bar').querySelector('.bar-inner');
@@ -155,12 +154,13 @@
     async function loadBranchJSON(branchName) {
       try {
         const res = await fetch(`branches/${branchName}.json`);
+        if (!res.ok) throw new Error('Branch not found');
         const data = await res.json();
         runBranch(data);
       } catch (e) {
         const err = document.createElement('div');
         err.className = 'line alert-red';
-        err.textContent = 'ERROR: Unable to load branch';
+        err.textContent = 'ERROR: Unable to load branch: ' + branchName;
         terminal.appendChild(err);
       }
     }
@@ -240,7 +240,7 @@
 
       const instruction = document.createElement('div');
       instruction.className = 'line';
-      instruction.textContent = 'Please enter command:';
+      instruction.textContent = 'Enter a branch name to start (Deploy, Nuclear, Guard):';
       terminal.appendChild(instruction);
 
       clearInputLine();
@@ -249,16 +249,18 @@
 
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !gameState.gameOver) {
-          const cmd = input.value.trim().toLowerCase();
+          const cmd = input.value.trim();
           addUserEcho(cmd);
 
-          if (cmd === 'code-1') {
+          // Normalize the input to match filename casing (optional)
+          const branch = ['deploy', 'nuclear', 'guard'].find(b => b === cmd.toLowerCase());
+          if (branch) {
             showStatusPanel();
-            loadBranchJSON('initial');
+            loadBranchJSON(branch.charAt(0).toUpperCase() + branch.slice(1));
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
-            unknown.textContent = 'unrecognized command';
+            unknown.textContent = 'unrecognized command. Please enter: Deploy, Nuclear, or Guard';
             insertAboveInput(unknown);
           }
 
