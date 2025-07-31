@@ -1,1 +1,411 @@
+{
+  "introText": "Sierra Command: You are the operator overseeing squad Delta at Sierra Lab. Reports indicate a fast-spreading outbreak of unknown supernatural creatures—likely vampires and other anomalies. Your task is to guide the squad safely through containment and extraction.\n\nCommands available: deploy forward, secure perimeter, call reinforcements.",
+  "choices": [
+    {
+      "command": "deploy forward",
+      "message": "You order Delta squad to advance cautiously into the lab's east wing. Sensors report erratic movement and power fluctuations.",
+      "effect": {
+        "morale": 5,
+        "supplies": -15,
+        "personnel": 0
+      },
+      "next": "east_wing"
+    },
+    {
+      "command": "secure perimeter",
+      "message": "You instruct Delta squad to fortify current position near the main entrance, setting up barricades and traps.",
+      "effect": {
+        "morale": 3,
+        "supplies": -8,
+        "personnel": 0
+      },
+      "next": "perimeter_defense"
+    },
+    {
+      "command": "call reinforcements",
+      "message": "You request additional backup from base. Response times uncertain—expect delays due to unknown threat level.",
+      "effect": {
+        "morale": 4,
+        "supplies": -5,
+        "personnel": 0
+      },
+      "next": "waiting_backup"
+    }
+  ],
+
+  "branches": {
+    "east_wing": {
+      "introText": "Delta squad moves into the east wing. Static crackles over comms—something's lurking. Suddenly, a squad member reports an aggressive entity approaching fast.",
+      "choices": [
+        {
+          "command": "prepare defense",
+          "message": "You order squad to ready defensive positions and stun weapons.",
+          "effect": {
+            "morale": 4,
+            "supplies": -10,
+            "personnel": 0
+          },
+          "next": "defense_engaged"
+        },
+        {
+          "command": "retreat",
+          "message": "You instruct squad to fall back to safer ground, preserving personnel.",
+          "effect": {
+            "morale": -2,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "fallback_point"
+        },
+        {
+          "command": "call air support",
+          "message": "You call in experimental UV bombardment over the east wing. Effects on creatures unknown.",
+          "effect": {
+            "morale": 6,
+            "supplies": -25,
+            "personnel": -10
+          },
+          "next": "uv_bombardment"
+        }
+      ]
+    },
+
+    "perimeter_defense": {
+      "introText": "The squad fortifies the perimeter. Strange howls echo through vents. Night vision flickers; power is unstable.",
+      "choices": [
+        {
+          "command": "increase patrols",
+          "message": "You direct increased patrols to monitor entrances.",
+          "effect": {
+            "morale": 3,
+            "supplies": -12,
+            "personnel": 0
+          },
+          "next": "ambush_alert"
+        },
+        {
+          "command": "seal vents",
+          "message": "You order vents sealed to prevent creature entry, but this may limit ventilation for squad.",
+          "effect": {
+            "morale": -1,
+            "supplies": -8,
+            "personnel": 0
+          },
+          "next": "vent_sealed"
+        },
+        {
+          "command": "set traps",
+          "message": "You deploy energy traps that disrupt supernatural movement but drain power.",
+          "effect": {
+            "morale": 4,
+            "supplies": -15,
+            "personnel": 0
+          },
+          "next": "trap_set"
+        }
+      ]
+    },
+
+    "waiting_backup": {
+      "introText": "Backup is en route but delayed. Squad reports sightings of multiple fast-moving targets nearby. Communications are intermittent.",
+      "choices": [
+        {
+          "command": "hold position",
+          "message": "You order squad to hold position and conserve resources.",
+          "effect": {
+            "morale": 2,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "ambush_alert"
+        },
+        {
+          "command": "send scouts",
+          "message": "You send a small scouting team to gather intel, risking exposure.",
+          "effect": {
+            "morale": 3,
+            "supplies": -10,
+            "personnel": -5
+          },
+          "next": "scout_report"
+        },
+        {
+          "command": "prepare evac",
+          "message": "You prepare squad for immediate evacuation on backup arrival.",
+          "effect": {
+            "morale": -1,
+            "supplies": -8,
+            "personnel": 0
+          },
+          "next": "evac_ready"
+        }
+      ]
+    },
+
+    "defense_engaged": {
+      "introText": "Delta squad engages the entity—a vicious vampire-like creature. Energy weapons prove somewhat effective but squad suffers injuries.",
+      "choices": [
+        {
+          "command": "press attack",
+          "message": "You order an all-out attack to eliminate the creature.",
+          "effect": {
+            "morale": -5,
+            "supplies": -20,
+            "personnel": -15
+          },
+          "next": "creature_down"
+        },
+        {
+          "command": "fallback",
+          "message": "You order fallback to regroup and treat injuries.",
+          "effect": {
+            "morale": 2,
+            "supplies": -10,
+            "personnel": 0
+          },
+          "next": "fallback_point"
+        }
+      ]
+    },
+
+    "fallback_point": {
+      "introText": "Squad regroups at fallback point. Comms report multiple unknown hostiles closing in.",
+      "choices": [
+        {
+          "command": "set perimeter",
+          "message": "You order squad to quickly fortify the fallback point.",
+          "effect": {
+            "morale": 3,
+            "supplies": -10,
+            "personnel": 0
+          },
+          "next": "last_stand"
+        },
+        {
+          "command": "request evac",
+          "message": "You call for emergency extraction—hope arrives soon.",
+          "effect": {
+            "morale": 1,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "evac_ready"
+        }
+      ]
+    },
+
+    "uv_bombardment": {
+      "introText": "UV bombardment scorches the east wing. Some creatures scream in agony; others vanish. Squad moves forward carefully.",
+      "choices": [
+        {
+          "command": "advance",
+          "message": "You push the squad deeper into the east wing.",
+          "effect": {
+            "morale": 5,
+            "supplies": -15,
+            "personnel": -5
+          },
+          "next": "creature_nest"
+        },
+        {
+          "command": "scan area",
+          "message": "You order squad to scan for creature nests and weak points.",
+          "effect": {
+            "morale": 2,
+            "supplies": -8,
+            "personnel": 0
+          },
+          "next": "scan_results"
+        }
+      ]
+    },
+
+    "creature_down": {
+      "introText": "The creature is down but squad is exhausted and low on supplies.",
+      "choices": [
+        {
+          "command": "regroup",
+          "message": "Order squad to regroup and resupply before next move.",
+          "effect": {
+            "morale": 3,
+            "supplies": 10,
+            "personnel": 0
+          },
+          "next": "mission_continue"
+        },
+        {
+          "command": "press forward",
+          "message": "Push forward despite fatigue, seeking to end the outbreak.",
+          "effect": {
+            "morale": -5,
+            "supplies": -20,
+            "personnel": -10
+          },
+          "next": "mission_continue"
+        }
+      ]
+    },
+
+    "trap_set": {
+      "introText": "Energy traps hum to life, disrupting the unnatural forces. Movement slows near the perimeter.",
+      "choices": [
+        {
+          "command": "increase traps",
+          "message": "You order deployment of more traps, draining power quickly.",
+          "effect": {
+            "morale": 3,
+            "supplies": -20,
+            "personnel": 0
+          },
+          "next": "ambush_alert"
+        },
+        {
+          "command": "monitor traps",
+          "message": "You monitor the traps, conserving power and waiting.",
+          "effect": {
+            "morale": 1,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "ambush_alert"
+        }
+      ]
+    },
+
+    "ambush_alert": {
+      "introText": "Alarms sound! Hostiles breach perimeter. The squad is under attack.",
+      "choices": [
+        {
+          "command": "call evac",
+          "message": "You call for immediate evacuation and air support.",
+          "effect": {
+            "morale": 5,
+            "supplies": -15,
+            "personnel": 0
+          },
+          "next": "mission_end"
+        },
+        {
+          "command": "hold position",
+          "message": "You order squad to hold position and repel attackers.",
+          "effect": {
+            "morale": -5,
+            "supplies": -20,
+            "personnel": -10
+          },
+          "next": "mission_end"
+        }
+      ]
+    },
+
+    "scout_report": {
+      "introText": "Scouts report multiple vampire nests nearby with heavy patrols. Risks are high.",
+      "choices": [
+        {
+          "command": "launch surprise attack",
+          "message": "You authorize a surprise strike to disrupt nests.",
+          "effect": {
+            "morale": 4,
+            "supplies": -25,
+            "personnel": -15
+          },
+          "next": "mission_end"
+        },
+        {
+          "command": "avoid nests",
+          "message": "You choose to bypass nests, risking potential ambush later.",
+          "effect": {
+            "morale": 2,
+            "supplies": -10,
+            "personnel": 0
+          },
+          "next": "mission_end"
+        }
+      ]
+    },
+
+    "evac_ready": {
+      "introText": "Extraction team is en route. Squad prepares for evacuation amidst growing hostiles.",
+      "choices": [
+        {
+          "command": "hold position",
+          "message": "Hold position until evac arrives.",
+          "effect": {
+            "morale": 2,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "mission_end"
+        },
+        {
+          "command": "fallback",
+          "message": "Fallback to safer location to expedite evac.",
+          "effect": {
+            "morale": 1,
+            "supplies": -8,
+            "personnel": 0
+          },
+          "next": "mission_end"
+        }
+      ]
+    },
+
+    "mission_continue": {
+      "introText": "Squad regroups. Situation remains volatile. You must choose your next command carefully.",
+      "choices": [
+        {
+          "command": "deploy forward",
+          "message": "Advance deeper into the lab, searching for the outbreak source.",
+          "effect": {
+            "morale": 3,
+            "supplies": -15,
+            "personnel": -5
+          },
+          "next": "creature_nest"
+        },
+        {
+          "command": "call reinforcements",
+          "message": "Request backup from base to strengthen squad.",
+          "effect": {
+            "morale": 5,
+            "supplies": -10,
+            "personnel": 0
+          },
+          "next": "waiting_backup"
+        }
+      ]
+    },
+
+    "creature_nest": {
+      "introText": "Squad locates a vampire nest. Darkness thickens, creatures emerge in swarms.",
+      "choices": [
+        {
+          "command": "engage",
+          "message": "Order squad to engage aggressively to contain nest.",
+          "effect": {
+            "morale": -10,
+            "supplies": -25,
+            "personnel": -20
+          },
+          "next": "mission_end"
+        },
+        {
+          "command": "set charges",
+          "message": "Prepare explosives to destroy nest, then retreat.",
+          "effect": {
+            "morale": 4,
+            "supplies": -20,
+            "personnel": -5
+          },
+          "next": "mission_end"
+        }
+      ]
+    },
+
+    "mission_end": {
+      "introText": "Mission status: Completed. Your command has ended. Review the outcome and prepare for debrief.",
+      "choices": []
+    }
+  }
+}
 
