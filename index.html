@@ -42,6 +42,7 @@
 
   .input-line {
     display: flex;
+    align-items: center;
   }
 
   .prompt {
@@ -54,6 +55,7 @@
     background-color: #39ff14;
     animation: blink 1s step-start infinite;
     margin-left: 2px;
+    height: 24px;
   }
 
   input {
@@ -80,85 +82,94 @@
 
 <script>
   const terminal = document.getElementById('terminal');
-  const input = document.getElementById('terminal-input');
 
-  input.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-      const command = input.value.trim().toLowerCase();
-      if (command === 'code-1') {
-        loadCode1Terminal();
-      } else {
-        // Optionally, show unknown command or clear input
-        addLine(`Unknown command: ${command}`);
-      }
-      input.value = '';
-    }
-  });
-
-  function addLine(text) {
-    const line = document.createElement('div');
-    line.className = 'line';
-    line.textContent = text;
-    // Insert above the input line
-    const inputLine = terminal.querySelector('.input-line');
-    terminal.insertBefore(line, inputLine);
-  }
-
-  function loadCode1Terminal() {
-    // Clear terminal
-    terminal.innerHTML = '';
-
-    // Add new title
-    const title = document.createElement('div');
-    title.className = 'line';
-    title.textContent = '*** CODE-1 TERMINAL ***';
-    terminal.appendChild(title);
-
-    // Add subtitle or instructions if you want
-    const sub = document.createElement('div');
-    sub.className = 'line';
-    sub.textContent = 'Welcome to CODE-1 interface.';
-    terminal.appendChild(sub);
-
-    // Add new input line
+  function createInputLine(promptText, inputId) {
     const inputLine = document.createElement('div');
     inputLine.className = 'input-line';
 
     const prompt = document.createElement('span');
     prompt.className = 'prompt';
-    prompt.textContent = 'CODE-1>';
+    prompt.textContent = promptText;
 
-    const newInput = document.createElement('input');
-    newInput.type = 'text';
-    newInput.id = 'code1-input';
-    newInput.autofocus = true;
-    newInput.autocomplete = 'off';
-    newInput.style.background = 'transparent';
-    newInput.style.border = 'none';
-    newInput.style.outline = 'none';
-    newInput.style.color = '#39ff14';
-    newInput.style.fontFamily = "'Courier New', Courier, monospace";
-    newInput.style.fontSize = '18px';
-    newInput.style.flexGrow = '1';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = inputId;
+    input.autofocus = true;
+    input.autocomplete = 'off';
 
     const cursor = document.createElement('div');
     cursor.className = 'cursor';
 
     inputLine.appendChild(prompt);
-    inputLine.appendChild(newInput);
+    inputLine.appendChild(input);
     inputLine.appendChild(cursor);
 
+    return { inputLine, input };
+  }
+
+  function initMainTerminal() {
+    terminal.innerHTML = '';
+
+    const titleLine = document.createElement('div');
+    titleLine.className = 'line';
+    titleLine.textContent = '*** MILITARY TERMINAL ACCESS ***';
+
+    const instructionLine = document.createElement('div');
+    instructionLine.className = 'line';
+    instructionLine.textContent = 'Please enter command:';
+
+    terminal.appendChild(titleLine);
+    terminal.appendChild(instructionLine);
+
+    const { inputLine, input } = createInputLine('C:\\>', 'terminal-input');
     terminal.appendChild(inputLine);
+    input.focus();
 
-    // Focus on the new input
-    newInput.focus();
-
-    // You can add event listener here for new commands inside CODE-1 terminal
-    newInput.addEventListener('keydown', function(e) {
+    input.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
-        const cmd = newInput.value.trim();
-        addCode1Line(`> ${cmd}`);
-        newInput.value = '';
+        const command = input.value.trim().toLowerCase();
+        if (command === 'code-1') {
+          initCode1Terminal();
+        } else {
+          addLine(`Unknown command: ${command}`);
+        }
+        input.value = '';
+      }
+    });
+  }
+
+  function addLine(text) {
+    const line = document.createElement('div');
+    line.className = 'line';
+    line.textContent = text;
+    // Insert above the last input line
+    const inputLine = terminal.querySelector('.input-line');
+    terminal.insertBefore(line, inputLine);
+  }
+
+  function initCode1Terminal() {
+    terminal.innerHTML = '';
+
+    const titleLine = document.createElement('div');
+    titleLine.className = 'line';
+    titleLine.textContent = '*** CODE-1 TERMINAL ***';
+
+    const welcomeLine = document.createElement('div');
+    welcomeLine.className = 'line';
+    welcomeLine.textContent = 'Welcome to CODE-1 interface.';
+
+    terminal.appendChild(titleLine);
+    terminal.appendChild(welcomeLine);
+
+    const { inputLine, input } = createInputLine('CODE-1>', 'code1-input');
+    terminal.appendChild(inputLine);
+    input.focus();
+
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        if (cmd) addCode1Line(`> ${cmd}`);
+        input.value = '';
       }
     });
 
@@ -169,6 +180,9 @@
       terminal.insertBefore(line, inputLine);
     }
   }
+
+  // Initialize the main terminal on page load
+  initMainTerminal();
 </script>
 </body>
 </html>
