@@ -39,7 +39,7 @@
     width: 180px;
     background: var(--panel-bg);
     padding: 12px 10px;
-    display: flex;
+    display: none; /* Hide initially */
     flex-direction: column;
     gap: 12px;
     border-right: 1px solid var(--green);
@@ -182,13 +182,15 @@
 
   <script>
     const terminal = document.getElementById('terminal');
+    const statusPanel = document.getElementById('status-panel');
     let gameState = {
       morale: 0,
       supplies: 100,
       soldiers: 200,
       branch: null,
       choiceMade: false,
-      gameOver: false
+      gameOver: false,
+      statusVisible: false
     };
 
     function updateBars() {
@@ -261,10 +263,16 @@
       if (existing) existing.remove();
     }
 
-    // We only disable input on game over
     function disableInput(inputEl) {
       inputEl.disabled = true;
       inputEl.style.opacity = '.6';
+    }
+
+    function showStatusPanel() {
+      if (!gameState.statusVisible) {
+        statusPanel.style.display = 'flex';
+        gameState.statusVisible = true;
+      }
     }
 
     function initMainTerminal() {
@@ -292,6 +300,7 @@
           const cmd = input.value.trim().toLowerCase();
           addUserEcho(cmd);
           if (cmd === 'code-1') {
+            showStatusPanel();  // Show status panel once code-1 is typed
             initCode1Terminal();
           } else {
             const unknown = document.createElement('div');
@@ -334,7 +343,7 @@
 
       const option2 = document.createElement('div');
       option2.className = 'line';
-      option2.textContent = '2) nuclear warhead';
+      option2.textContent = '2) nuclear';
       terminal.appendChild(option2);
 
       const option3 = document.createElement('div');
@@ -365,20 +374,18 @@
             addUserEcho('deploy soldiers');
             addStyledMessage('Foxtrot-1', 'Platoon mobilized, lethal force authorized');
             enterDeploySoldiersBranch();
-            // input stays enabled
-          } else if (val === 'nuclear warhead') {
+          } else if (val === 'nuclear') {
             gameState.choiceMade = true;
             gameState.gameOver = true;
             addUserEcho('nuclear');
-            addStyledMessage('November-2', "Site neutralized good work, you'll be relieved soon");
+            addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
             showCredits();
-            disableInput(input); // only disable on game over
+            disableInput(input);
           } else if (val === 'attempt containment') {
             gameState.choiceMade = true;
             gameState.branch = 'containment';
             addUserEcho('attempt containment');
             addStyledMessage('Foxtrot-1', 'Understood, deploying remaining forces for attempted containment');
-            // input stays enabled
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
@@ -439,7 +446,6 @@
               addStyledMessage('Foxtrot-1', 'Forces pulling back under heavy pressure. Situation worsening.');
             }
             showDeployStatus();
-            // input stays enabled
           } else if (val === 'secure the area') {
             gameState.choiceMade = true;
             gameState.morale += 5;
@@ -448,7 +454,6 @@
               gameState.supplies -= 10;
               addStyledMessage('Foxtrot-1', 'Small ambush during security sweep, minimal casualties but supplies used.');
             }
-            // input stays enabled
           } else if (val === 'search for intel') {
             gameState.choiceMade = true;
             if (Math.random() < 0.7) {
@@ -459,7 +464,6 @@
               addStyledMessage('Foxtrot-1', 'Intel search failed. Encountered heavy resistance, retreating with casualties.');
             }
             showDeployStatus();
-            // input stays enabled
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
