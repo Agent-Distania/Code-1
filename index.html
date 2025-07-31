@@ -8,9 +8,30 @@
 </head>
 <body>
   <div id="terminal-wrapper">
-    <div id="status-panel" role="region" aria-label="Game status panel">
-      <!-- status panel HTML (unchanged) -->
+    <div id="status-panel" role="region" aria-label="Game status panel" style="display:none; flex-direction: column;">
+      <div class="status-title">STATUS</div>
+
+      <div class="bar-wrapper">
+        <div class="label-row">
+          <span>Morale</span><span id="morale-value">0</span>
+        </div>
+        <div class="bar" id="morale-bar"><div class="bar-inner"></div></div>
+      </div>
+
+      <div class="bar-wrapper">
+        <div class="label-row">
+          <span>Supplies</span><span id="supplies-value">100%</span>
+        </div>
+        <div class="bar" id="supplies-bar"><div class="bar-inner"></div></div>
+      </div>
+
+      <div class="numeric-wrapper">
+        <div class="numeric-row">
+          <span>Soldiers</span><span id="soldiers-value">200</span>
+        </div>
+      </div>
     </div>
+
     <div id="terminal" role="log" aria-live="polite" aria-relevant="additions">
       <!-- dynamic content injected here -->
     </div>
@@ -20,8 +41,8 @@
     // Cached DOM elements and base game state setup
     const terminal = document.getElementById('terminal');
     const statusPanel = document.getElementById('status-panel');
-    const moraleBar = document.getElementById('morale-bar');
-    const suppliesBar = document.getElementById('supplies-bar');
+    const moraleBar = document.getElementById('morale-bar').querySelector('.bar-inner');
+    const suppliesBar = document.getElementById('supplies-bar').querySelector('.bar-inner');
     const moraleValue = document.getElementById('morale-value');
     const suppliesValue = document.getElementById('supplies-value');
     const soldiersValue = document.getElementById('soldiers-value');
