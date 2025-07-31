@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Military Terminal - Decision Game</title>
+<title>Military Terminal Decision Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   body {
@@ -96,34 +96,31 @@
       return { wrapper, input };
     }
 
-    function addLineAboveInput(text, extraClass = '') {
+    function insertAboveInput(element) {
       const inputLine = terminal.querySelector('.input-line');
-      const line = document.createElement('div');
-      line.className = 'line' + (extraClass ? ' ' + extraClass : '');
-      line.textContent = text;
-      if (inputLine) {
-        terminal.insertBefore(line, inputLine);
-      } else {
-        terminal.appendChild(line);
-      }
+      if (inputLine) terminal.insertBefore(element, inputLine);
+      else terminal.appendChild(element);
       scrollToBottom();
     }
 
-    function addStyledMessage(sender, message, senderLabelStyle = '') {
+    function addUserEcho(text) {
+      const line = document.createElement('div');
+      line.className = 'line';
+      line.textContent = '> ' + text;
+      insertAboveInput(line);
+    }
+
+    function addStyledMessage(sender, message) {
       const container = document.createElement('div');
       container.className = 'line';
       const senderSpan = document.createElement('span');
       senderSpan.className = 'sender';
       senderSpan.textContent = sender + ':';
-      if (senderLabelStyle) senderSpan.style.cssText = senderLabelStyle;
       container.appendChild(senderSpan);
       const msgSpan = document.createElement('span');
       msgSpan.textContent = ' ' + message;
       container.appendChild(msgSpan);
-      const inputLine = terminal.querySelector('.input-line');
-      if (inputLine) terminal.insertBefore(container, inputLine);
-      else terminal.appendChild(container);
-      scrollToBottom();
+      insertAboveInput(container);
     }
 
     function scrollToBottom() {
@@ -149,10 +146,14 @@
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
           const cmd = input.value.trim().toLowerCase();
+          addUserEcho(cmd);
           if (cmd === 'code-1') {
             initCode1Terminal();
           } else {
-            addLineAboveInput(`Unknown command: ${cmd}`);
+            const unknown = document.createElement('div');
+            unknown.className = 'line';
+            unknown.textContent = `Unknown command: ${cmd}`;
+            insertAboveInput(unknown);
           }
           input.value = '';
         }
@@ -213,22 +214,25 @@
           const val = input.value.trim().toLowerCase();
           if (val === 'deploy soldiers') {
             choiceMade = true;
+            addUserEcho('deploy soldiers');
             addStyledMessage('Home 1', 'Platoon mobilized, lethal force authorized');
-            addLineAboveInput('> deploy soldiers');
             disableInput(input);
           } else if (val === 'nuclear') {
             choiceMade = true;
+            addUserEcho('nuclear');
             addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
-            addLineAboveInput('> nuclear');
             showCredits();
             disableInput(input);
           } else if (val === 'attempt containment') {
             choiceMade = true;
+            addUserEcho('attempt containment');
             addStyledMessage('Sierra command', 'Understood, deploying remaining forces for attempted containment');
-            addLineAboveInput('> attempt containment');
             disableInput(input);
           } else {
-            addLineAboveInput(`Unknown choice: ${val}`);
+            const unknown = document.createElement('div');
+            unknown.className = 'line';
+            unknown.textContent = `Unknown choice: ${val}`;
+            insertAboveInput(unknown);
           }
           input.value = '';
         }
@@ -248,7 +252,6 @@
       scrollToBottom();
     }
 
-    // start
     initMainTerminal();
   </script>
 </body>
