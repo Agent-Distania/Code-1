@@ -334,7 +334,7 @@
 
       const option2 = document.createElement('div');
       option2.className = 'line';
-      option2.textContent = '2) nuclear';
+      option2.textContent = '2) nuclear warhead';
       terminal.appendChild(option2);
 
       const option3 = document.createElement('div');
@@ -366,11 +366,11 @@
             addStyledMessage('Foxtrot-1', 'Platoon mobilized, lethal force authorized');
             enterDeploySoldiersBranch();
             // input stays enabled
-          } else if (val === 'nuclear') {
+          } else if (val === 'nuclear warhead') {
             gameState.choiceMade = true;
             gameState.gameOver = true;
             addUserEcho('nuclear');
-            addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
+            addStyledMessage('November-2', "Site neutralized good work, you'll be relieved soon");
             showCredits();
             disableInput(input); // only disable on game over
           } else if (val === 'attempt containment') {
