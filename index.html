@@ -441,17 +441,19 @@
             showDeployStatus();
             disableInput(input);
           } else if (val === 'secure the area') {
-            gameState.choiceMade = true;
-            gameState.morale += 5;
-            addStyledMessage('Foxtrot-1', 'Area secured. Forces holding strong. Casualties minimal.');
-            if (Math.random() < 0.3) {
-              gameState.supplies -= 10;
-              addStyledMessage('Foxtrot-1', 'Small ambush during security sweep, minimal casualties but supplies used.');
-            }
-            disableInput(input);
-            //DO NOT SET GAME OVER HERE
-            //gameState.gameOver = true;
-            //showCredits();
+  gameState.choiceMade = true;
+  gameState.morale += 5;
+  addStyledMessage('Foxtrot-1', 'Area secured. Forces holding strong. Casualties minimal.');
+  if (Math.random() < 0.3) {
+    gameState.supplies -= 10;
+    addStyledMessage('Foxtrot-1', 'Small ambush during security sweep, minimal casualties but supplies used.');
+  }
+  // DO NOT disable input here, allow player to keep typing or add next steps as needed
+  // disableInput(input);
+  // gameState.gameOver = true;
+  // showCredits();
+}
+
           } else if (val === 'search for intel') {
             gameState.choiceMade = true;
             if (Math.random() < 0.7) {
