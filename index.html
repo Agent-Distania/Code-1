@@ -36,9 +36,9 @@
     position: relative;
   }
   #status-panel {
-    width: 160px;
+    width: 180px;
     background: var(--panel-bg);
-    padding: 12px 8px;
+    padding: 12px 10px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -75,6 +75,24 @@
     background: var(--green);
     width: 100%;
     transition: width .3s ease;
+  }
+  .numeric-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .numeric-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+  }
+  .value-box {
+    background: rgba(0, 17, 0, 0.7);
+    padding: 4px 6px;
+    border: 1px solid var(--green);
+    border-radius: 3px;
+    text-align: right;
+    font-weight: bold;
   }
   #terminal {
     flex: 1;
@@ -139,7 +157,7 @@
           <div>Morale</div><div id="morale-value">+0</div>
         </div>
         <div class="bar" aria-label="Morale">
-          <div class="bar-inner" id="morale-bar" style="width:100%;"></div>
+          <div class="bar-inner" id="morale-bar" style="width:50%;"></div>
         </div>
       </div>
       <div class="bar-wrapper">
@@ -148,6 +166,11 @@
         </div>
         <div class="bar" aria-label="Supplies">
           <div class="bar-inner" id="supplies-bar" style="width:100%;"></div>
+        </div>
+      </div>
+      <div class="numeric-wrapper">
+        <div class="numeric-row">
+          <div>Soldiers</div><div class="value-box" id="soldiers-value">200</div>
         </div>
       </div>
       <div class="small-note">Only first choice per branch accepted.</div>
@@ -163,26 +186,29 @@
       morale: 0, // relative modifier
       forceIntegrity: 100,
       supplies: 100,
+      soldiers: 200,
       branch: null,
       choiceMade: false
     };
 
-    // UI updates for bars
+    // UI updates for status panel
     function updateBars() {
       const moraleBar = document.getElementById('morale-bar');
       const suppliesBar = document.getElementById('supplies-bar');
       const moraleValue = document.getElementById('morale-value');
       const suppliesValue = document.getElementById('supplies-value');
+      const soldiersValue = document.getElementById('soldiers-value');
 
-      // Cap for display (morale from -100 to +100 mapped to 0-100)
+      // Morale: centered at 0 => 50% plus/minus
       let moraleDisplay = Math.max(-100, Math.min(100, gameState.morale));
-      // We'll show + / - but bar fills relative to 50 + morale/2
       const moralePercent = Math.max(0, Math.min(100, 50 + moraleDisplay / 2));
       moraleBar.style.width = moralePercent + '%';
       moraleValue.textContent = (gameState.morale >= 0 ? '+' : '') + gameState.morale;
 
       suppliesBar.style.width = Math.max(0, Math.min(100, gameState.supplies)) + '%';
       suppliesValue.textContent = Math.round(gameState.supplies) + '%';
+
+      soldiersValue.textContent = Math.round(gameState.soldiers);
     }
 
     function createInputLine(promptText, inputId) {
@@ -272,6 +298,7 @@
             insertAboveInput(unknown);
           }
           input.value = '';
+          updateBars();
         }
       });
     }
@@ -334,7 +361,6 @@
             gameState.branch = 'deploy_soldiers';
             addUserEcho('deploy soldiers');
             addStyledMessage('Home 1', 'Platoon mobilized, lethal force authorized');
-            // proceed into follow-up branch
             enterDeploySoldiersBranch();
             disableInput(input);
           } else if (val === 'nuclear') {
@@ -362,11 +388,9 @@
     }
 
     function enterDeploySoldiersBranch() {
-      // follow-up after deploy soldiers
-      gameState.choiceMade = false; // new layer
+      gameState.choiceMade = false; // new sub-choice layer
       updateBars();
 
-      // expose follow-up options
       const header = document.createElement('div');
       header.className = 'line';
       header.textContent = 'Follow-up orders:';
@@ -392,7 +416,6 @@
       promptLine.textContent = 'Type your choice exactly and press Enter:';
       terminal.appendChild(promptLine);
 
-      // remove any previous input line and create new one
       clearInputLine();
       const { wrapper, input } = createInputLine('CODE-1>', 'deploy-input');
       terminal.appendChild(wrapper);
@@ -450,7 +473,7 @@
     function showDeployStatus() {
       const status = document.createElement('div');
       status.className = 'line';
-      status.textContent = `STATUS -- Morale: ${gameState.morale >= 0 ? '+' : ''}${gameState.morale}, Force Integrity: ${gameState.forceIntegrity}%, Supplies: ${Math.round(gameState.supplies)}%`;
+      status.textContent = `STATUS -- Morale: ${gameState.morale >= 0 ? '+' : ''}${gameState.morale}, Force Integrity: ${gameState.forceIntegrity}%, Supplies: ${Math.round(gameState.supplies)}%, Soldiers: ${Math.round(gameState.soldiers)}`;
       terminal.appendChild(status);
       scrollToBottom();
     }
