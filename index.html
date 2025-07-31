@@ -162,6 +162,20 @@
       scrollToBottom();
     }
 
+    // New function: show game over screen after end of branch
+    function showGameOver() {
+      gameState.gameOver = true;
+      const gameOverMsg = document.createElement('div');
+      gameOverMsg.className = 'line alert-red';
+      gameOverMsg.textContent = '--- MISSION COMPLETE --- GAME OVER ---';
+      terminal.appendChild(gameOverMsg);
+
+      const restartBtn = createRestartButton();
+      terminal.appendChild(restartBtn);
+
+      scrollToBottom();
+    }
+
     async function loadBranchJSON(branchName) {
       try {
         const res = await fetch(`branches/${branchName}.json`);
@@ -180,7 +194,6 @@
       updateBars();
 
       if (branch === code1Menu) {
-        // Show red alert message from Sierra Command first
         const alertMsg = document.createElement('div');
         alertMsg.className = 'line alert-red';
         alertMsg.textContent = 'FATAL CONTAINMENT BREACH AT SIERRA LAB. THE FATE OF THE NATION, POSSIBLY THE WORLD, RESTS ON YOUR CHOICES.';
@@ -191,6 +204,12 @@
       intro.className = 'line';
       intro.textContent = branch.introText;
       terminal.appendChild(intro);
+
+      // If no choices, show game over and return early
+      if (!branch.choices || branch.choices.length === 0) {
+        showGameOver();
+        return;
+      }
 
       branch.choices.forEach((choice, idx) => {
         const opt = document.createElement('div');
@@ -220,7 +239,6 @@
             if (branch === code1Menu) {
               // User picked mission from menu — load JSON branch file
               disableInput(input);
-              // Capitalize first letter to match your filenames exactly
               const branchFileName = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
               loadBranchJSON(branchFileName);
             } else {
