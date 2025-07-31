@@ -1,1 +1,41 @@
+{
+  "introText": "Sierra Command: You have authorized the deployment of the nuclear warhead to contain the outbreak at Sierra Lab. Detonation imminent.",
+  "choices": [
+    {
+      "command": "detonate",
+      "message": "Nuclear warhead detonated. The blast eradicates the outbreak but devastates the facility and surrounding areas.",
+      "effect": {
+        "morale": -50,
+        "supplies": -100,
+        "personnel": -100
+      },
+      "next": "nuclear_epilogue"
+    },
+    {
+      "command": "abort",
+      "message": "You abort the detonation at the last moment, seeking alternative solutions. The outbreak worsens.",
+      "effect": {
+        "morale": -20,
+        "supplies": -30,
+        "personnel": -40
+      },
+      "next": "outbreak_worsens"
+    }
+  ],
+
+  "branches": {
+    "nuclear_epilogue": {
+      "introText": "The detonation has contained the supernatural outbreak but at a terrible cost.\n\n" +
+                   "Most of the lab personnel were lost in the blast. Tens of thousands have been displaced due to radioactive fallout. The surrounding city lies in ruins.\n\n" +
+                   "You saved the nation from a global catastrophe, but the price will haunt you and the world for decades.\n\n--- MISSION COMPLETE ---",
+      "choices": []
+    },
+
+    "outbreak_worsens": {
+      "introText": "Without the nuclear option, the outbreak has spread uncontrollably.\n\n" +
+                   "The containment breach is now a global emergency.\n\n--- MISSION FAILED ---",
+      "choices": []
+    }
+  }
+}
 
