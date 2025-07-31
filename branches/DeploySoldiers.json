@@ -106,6 +106,42 @@
       ]
     },
 
+    "vent_sealed": {
+      "introText": "The vents are sealed tight, slowing the creatures' approach but making the air stale. Guards report feeling light-headed and visibility is limited.",
+      "choices": [
+        {
+          "command": "increase patrols",
+          "message": "You order extra patrols to compensate for limited visibility and stale air.",
+          "effect": {
+            "morale": 2,
+            "supplies": -10,
+            "personnel": 0
+          },
+          "next": "ambush_alert"
+        },
+        {
+          "command": "open vents partially",
+          "message": "You decide to partially reopen vents to improve ventilation, accepting the risk of enemy entry.",
+          "effect": {
+            "morale": -1,
+            "supplies": -5,
+            "personnel": 0
+          },
+          "next": "ambush_alert"
+        },
+        {
+          "command": "rest squad",
+          "message": "You give the squad a brief rest to recover from the stale air effects.",
+          "effect": {
+            "morale": 3,
+            "supplies": -8,
+            "personnel": 0
+          },
+          "next": "waiting_backup"
+        }
+      ]
+    },
+
     "waiting_backup": {
       "introText": "Backup is en route but delayed. Squad reports sightings of multiple fast-moving targets nearby. Communications are intermittent.",
       "choices": [
@@ -408,4 +444,3 @@
     }
   }
 }
-
