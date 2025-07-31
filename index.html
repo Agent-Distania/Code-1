@@ -184,14 +184,28 @@
     const terminal = document.getElementById('terminal');
     let gameState = {
       morale: 0, // relative modifier
-      forceIntegrity: 100,
       supplies: 100,
       soldiers: 200,
       branch: null,
       choiceMade: false
     };
 
-    // UI updates for status panel
+    const displayState = {
+      moralePercent: 50,  // Starting position for morale bar (neutral)
+      suppliesPercent: 100
+    };
+
+    function animateValue(key, from, to, onUpdate, duration = 500) {
+      const start = performance.now();
+      function step(now) {
+        const t = Math.min(1, (now - start) / duration);
+        const current = from + (to - from) * t; // linear easing
+        onUpdate(current);
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
     function updateBars() {
       const moraleBar = document.getElementById('morale-bar');
       const suppliesBar = document.getElementById('supplies-bar');
@@ -199,15 +213,22 @@
       const suppliesValue = document.getElementById('supplies-value');
       const soldiersValue = document.getElementById('soldiers-value');
 
-      // Morale: centered at 0 => 50% plus/minus
       let moraleDisplay = Math.max(-100, Math.min(100, gameState.morale));
-      const moralePercent = Math.max(0, Math.min(100, 50 + moraleDisplay / 2));
-      moraleBar.style.width = moralePercent + '%';
+      const targetMoralePercent = Math.max(0, Math.min(100, 50 + moraleDisplay / 2));
+      const targetSuppliesPercent = Math.max(0, Math.min(100, gameState.supplies));
+
+      animateValue('morale', displayState.moralePercent, targetMoralePercent, (val) => {
+        moraleBar.style.width = val + '%';
+      });
+      displayState.moralePercent = targetMoralePercent;
+
+      animateValue('supplies', displayState.suppliesPercent, targetSuppliesPercent, (val) => {
+        suppliesBar.style.width = val + '%';
+      });
+      displayState.suppliesPercent = targetSuppliesPercent;
+
       moraleValue.textContent = (gameState.morale >= 0 ? '+' : '') + gameState.morale;
-
-      suppliesBar.style.width = Math.max(0, Math.min(100, gameState.supplies)) + '%';
       suppliesValue.textContent = Math.round(gameState.supplies) + '%';
-
       soldiersValue.textContent = Math.round(gameState.soldiers);
     }
 
@@ -426,14 +447,13 @@
           addUserEcho(val);
           if (val === 'advance to breach site') {
             gameState.choiceMade = true;
-            // 60% success
             if (Math.random() < 0.6) {
               gameState.morale += 10;
               addStyledMessage('Home 1', 'Advance successful. Recon completed, intel gathered. Morale boosted. Force integrity nominal.');
             } else {
-              gameState.forceIntegrity -= 30;
+              gameState.soldiers -= 40;
               gameState.morale -= 10;
-              addStyledMessage('Home 1', 'Ambushed during advance. Heavy casualties. Force integrity degraded.');
+              addStyledMessage('Home 1', 'Ambushed during advance. Heavy casualties. Soldiers lost, morale degraded.');
             }
           } else if (val === 'secure perimeter') {
             gameState.choiceMade = true;
@@ -473,12 +493,12 @@
     function showDeployStatus() {
       const status = document.createElement('div');
       status.className = 'line';
-      status.textContent = `STATUS -- Morale: ${gameState.morale >= 0 ? '+' : ''}${gameState.morale}, Force Integrity: ${gameState.forceIntegrity}%, Supplies: ${Math.round(gameState.supplies)}%, Soldiers: ${Math.round(gameState.soldiers)}`;
+      status.textContent = `STATUS -- Morale: ${gameState.morale >= 0 ? '+' : ''}${gameState.morale}, Supplies: ${Math.round(gameState.supplies)}%, Soldiers: ${Math.round(gameState.soldiers)}`;
       terminal.appendChild(status);
       scrollToBottom();
     }
 
-    // start
+    // start the game
     initMainTerminal();
   </script>
 </body>
