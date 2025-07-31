@@ -38,6 +38,7 @@
   </div>
 
   <script>
+    // Cached DOM elements and base game state setup
     const terminal = document.getElementById('terminal');
     const statusPanel = document.getElementById('status-panel');
     const moraleBar = document.getElementById('morale-bar').querySelector('.bar-inner');
@@ -54,6 +55,16 @@
       choiceMade: false,
       gameOver: false,
       statusVisible: false
+    };
+
+    // Special menu branch for Code-1 mode selection
+    const code1Menu = {
+      introText: '*** CODE-1 TERMINAL - SELECT MISSION ***',
+      choices: [
+        { command: 'deploy', message: 'Loading Deploy mission...', effect: {} },
+        { command: 'nuclear', message: 'Loading Nuclear mission...', effect: {} },
+        { command: 'guard', message: 'Loading Guard mission...', effect: {} }
+      ]
     };
 
     function clamp(num, min, max) {
@@ -154,13 +165,12 @@
     async function loadBranchJSON(branchName) {
       try {
         const res = await fetch(`branches/${branchName}.json`);
-        if (!res.ok) throw new Error('Branch not found');
         const data = await res.json();
         runBranch(data);
       } catch (e) {
         const err = document.createElement('div');
         err.className = 'line alert-red';
-        err.textContent = 'ERROR: Unable to load branch: ' + branchName;
+        err.textContent = 'ERROR: Unable to load branch';
         terminal.appendChild(err);
       }
     }
@@ -197,13 +207,21 @@
 
           if (match) {
             addUserEcho(val);
-            gameState.morale += match.effect.morale || 0;
-            gameState.supplies += match.effect.supplies || 0;
-            gameState.soldiers += match.effect.personnel || 0;
             addStyledMessage('Sierra Command', match.message);
-            updateBars();
-            disableInput(input);
-            showCredits();
+
+            if (branch === code1Menu) {
+              // User picked mission from menu — load JSON branch file
+              disableInput(input);
+              loadBranchJSON(val.charAt(0).toUpperCase() + val.slice(1)); // Capitalize first letter to match file name
+            } else {
+              // Regular branch gameplay choice
+              gameState.morale += match.effect.morale || 0;
+              gameState.supplies += match.effect.supplies || 0;
+              gameState.soldiers += match.effect.personnel || 0;
+              updateBars();
+              disableInput(input);
+              showCredits();
+            }
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
@@ -240,7 +258,7 @@
 
       const instruction = document.createElement('div');
       instruction.className = 'line';
-      instruction.textContent = 'Enter a branch name to start (Deploy, Nuclear, Guard):';
+      instruction.textContent = 'Please enter command:';
       terminal.appendChild(instruction);
 
       clearInputLine();
@@ -249,18 +267,16 @@
 
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !gameState.gameOver) {
-          const cmd = input.value.trim();
+          const cmd = input.value.trim().toLowerCase();
           addUserEcho(cmd);
 
-          // Normalize the input to match filename casing (optional)
-          const branch = ['deploy', 'nuclear', 'guard'].find(b => b === cmd.toLowerCase());
-          if (branch) {
+          if (cmd === 'code-1') {
             showStatusPanel();
-            loadBranchJSON(branch.charAt(0).toUpperCase() + branch.slice(1));
+            runBranch(code1Menu);  // Show Code-1 mission menu
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
-            unknown.textContent = 'unrecognized command. Please enter: Deploy, Nuclear, or Guard';
+            unknown.textContent = 'unrecognized command';
             insertAboveInput(unknown);
           }
 
@@ -272,6 +288,7 @@
       scrollToBottom();
     }
 
+    // Start the main terminal on page load
     initMainTerminal();
   </script>
 </body>
