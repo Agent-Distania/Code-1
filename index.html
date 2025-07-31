@@ -187,7 +187,8 @@
       supplies: 100,
       soldiers: 200,
       branch: null,
-      choiceMade: false
+      choiceMade: false,
+      gameOver: false
     };
 
     function updateBars() {
@@ -269,6 +270,7 @@
       terminal.innerHTML = '';
       gameState.branch = null;
       gameState.choiceMade = false;
+      gameState.gameOver = false;
       updateBars();
 
       const title = document.createElement('div');
@@ -285,7 +287,7 @@
       terminal.appendChild(wrapper);
 
       input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !gameState.gameOver) {
           const cmd = input.value.trim().toLowerCase();
           addUserEcho(cmd);
           if (cmd === 'code-1') {
@@ -306,6 +308,7 @@
       terminal.innerHTML = '';
       gameState.branch = null;
       gameState.choiceMade = false;
+      gameState.gameOver = false;
       updateBars();
 
       const title = document.createElement('div');
@@ -353,7 +356,7 @@
       terminal.appendChild(wrapper);
 
       input.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && !gameState.choiceMade) {
+        if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
           const val = input.value.trim().toLowerCase();
           if (val === 'deploy soldiers') {
             gameState.choiceMade = true;
@@ -364,6 +367,7 @@
             disableInput(input);
           } else if (val === 'nuclear') {
             gameState.choiceMade = true;
+            gameState.gameOver = true;
             addUserEcho('nuclear');
             addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
             showCredits();
@@ -420,7 +424,7 @@
       terminal.appendChild(wrapper);
 
       input.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && !gameState.choiceMade) {
+        if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
           const val = input.value.trim().toLowerCase();
           addUserEcho(val);
 
@@ -434,6 +438,8 @@
               gameState.morale -= 5;
               addStyledMessage('Foxtrot-1', 'Forces pulling back under heavy pressure. Situation worsening.');
             }
+            showDeployStatus();
+            disableInput(input);
           } else if (val === 'secure the area') {
             gameState.choiceMade = true;
             gameState.morale += 5;
@@ -442,6 +448,10 @@
               gameState.supplies -= 10;
               addStyledMessage('Foxtrot-1', 'Small ambush during security sweep, minimal casualties but supplies used.');
             }
+            disableInput(input);
+            //DO NOT SET GAME OVER HERE
+            //gameState.gameOver = true;
+            //showCredits();
           } else if (val === 'search for intel') {
             gameState.choiceMade = true;
             if (Math.random() < 0.7) {
@@ -451,6 +461,8 @@
               gameState.morale -= 5;
               addStyledMessage('Foxtrot-1', 'Intel search failed. Encountered heavy resistance, retreating with casualties.');
             }
+            showDeployStatus();
+            disableInput(input);
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
@@ -461,9 +473,7 @@
           }
 
           input.value = '';
-          disableInput(input);
           updateBars();
-          showDeployStatus();
         }
       });
     }
