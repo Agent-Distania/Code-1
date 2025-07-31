@@ -25,7 +25,7 @@
     align-items: center;
   }
   #terminal-wrapper {
-    background: #001100;
+    background: var(--bg);
     border: 2px solid var(--green);
     padding: 0;
     width: 800px;
@@ -39,7 +39,7 @@
     width: 180px;
     background: var(--panel-bg);
     padding: 12px 10px;
-    display: none; /* Hide initially */
+    display: none; /* Hidden initially */
     flex-direction: column;
     gap: 12px;
     border-right: 1px solid var(--green);
@@ -167,40 +167,47 @@
 </head>
 <body>
   <div id="terminal-wrapper">
-    <div id="status-panel">
+    <div id="status-panel" role="region" aria-label="Game status panel">
       <div class="status-title">STATUS</div>
-      <div class="bar-wrapper">
+      <div class="bar-wrapper" aria-live="polite">
         <div class="label-row">
-          <div>Morale</div><div id="morale-value">+0</div>
+          <div>Morale</div><div id="morale-value" aria-atomic="true">+0</div>
         </div>
-        <div class="bar" aria-label="Morale">
+        <div class="bar" aria-label="Morale level">
           <div class="bar-inner" id="morale-bar" style="width:50%;"></div>
         </div>
       </div>
-      <div class="bar-wrapper">
+      <div class="bar-wrapper" aria-live="polite">
         <div class="label-row">
-          <div>Supplies</div><div id="supplies-value">100%</div>
+          <div>Supplies</div><div id="supplies-value" aria-atomic="true">100%</div>
         </div>
-        <div class="bar" aria-label="Supplies">
+        <div class="bar" aria-label="Supplies level">
           <div class="bar-inner" id="supplies-bar" style="width:100%;"></div>
         </div>
       </div>
-      <div class="numeric-wrapper">
+      <div class="numeric-wrapper" aria-live="polite">
         <div class="numeric-row">
-          <div id="soldiers-label">Soldiers</div><div class="value-box" id="soldiers-value">200</div>
+          <div>Soldiers</div><div class="value-box" id="soldiers-value" aria-atomic="true">200</div>
         </div>
       </div>
       <div class="small-note">Only first choice per branch accepted.</div>
     </div>
-    <div id="terminal">
+    <div id="terminal" role="log" aria-live="polite" aria-relevant="additions">
       <!-- dynamic content injected here -->
     </div>
   </div>
 
   <script>
+    // Cached DOM elements
     const terminal = document.getElementById('terminal');
     const statusPanel = document.getElementById('status-panel');
-    const soldiersLabel = document.getElementById('soldiers-label');
+    const moraleBar = document.getElementById('morale-bar');
+    const suppliesBar = document.getElementById('supplies-bar');
+    const moraleValue = document.getElementById('morale-value');
+    const suppliesValue = document.getElementById('supplies-value');
+    const soldiersValue = document.getElementById('soldiers-value');
+
+    // Game state object
     let gameState = {
       morale: 0,
       supplies: 100,
@@ -211,24 +218,39 @@
       statusVisible: false
     };
 
-    function updateBars() {
-      const moraleBar = document.getElementById('morale-bar');
-      const suppliesBar = document.getElementById('supplies-bar');
-      const moraleValue = document.getElementById('morale-value');
-      const suppliesValue = document.getElementById('supplies-value');
-      const soldiersValue = document.getElementById('soldiers-value');
+    // Helper: Clamp number
+    function clamp(num, min, max) {
+      return Math.min(Math.max(num, min), max);
+    }
 
-      let moraleDisplay = Math.max(-100, Math.min(100, gameState.morale));
-      const moralePercent = Math.max(0, Math.min(100, 50 + moraleDisplay / 2));
+    // Update status bars and numeric values
+    function updateBars() {
+      let moraleDisplay = clamp(gameState.morale, -100, 100);
+      // Morale bar from 0-100%, 50% = neutral
+      const moralePercent = clamp(50 + moraleDisplay / 2, 0, 100);
       moraleBar.style.width = moralePercent + '%';
       moraleValue.textContent = (gameState.morale >= 0 ? '+' : '') + gameState.morale;
 
-      suppliesBar.style.width = Math.max(0, Math.min(100, gameState.supplies)) + '%';
+      suppliesBar.style.width = clamp(gameState.supplies, 0, 100) + '%';
       suppliesValue.textContent = Math.round(gameState.supplies) + '%';
 
       soldiersValue.textContent = Math.max(0, Math.round(gameState.soldiers));
     }
 
+    // Scroll terminal to bottom
+    function scrollToBottom() {
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    // Insert element before input line or at end
+    function insertAboveInput(element) {
+      const inputLine = terminal.querySelector('.input-line');
+      if (inputLine) terminal.insertBefore(element, inputLine);
+      else terminal.appendChild(element);
+      scrollToBottom();
+    }
+
+    // Create user input line with prompt and input
     function createInputLine(promptText, inputId) {
       const wrapper = document.createElement('div');
       wrapper.className = 'input-line';
@@ -245,13 +267,13 @@
       return { wrapper, input };
     }
 
-    function insertAboveInput(element) {
-      const inputLine = terminal.querySelector('.input-line');
-      if (inputLine) terminal.insertBefore(element, inputLine);
-      else terminal.appendChild(element);
-      scrollToBottom();
+    // Clear existing input line
+    function clearInputLine() {
+      const existing = terminal.querySelector('.input-line');
+      if (existing) existing.remove();
     }
 
+    // Add a line echoing user input
     function addUserEcho(text) {
       const line = document.createElement('div');
       line.className = 'line';
@@ -259,6 +281,7 @@
       insertAboveInput(line);
     }
 
+    // Add a styled message with sender label
     function addStyledMessage(sender, message) {
       const container = document.createElement('div');
       container.className = 'line';
@@ -272,20 +295,13 @@
       insertAboveInput(container);
     }
 
-    function scrollToBottom() {
-      terminal.scrollTop = terminal.scrollHeight;
-    }
-
-    function clearInputLine() {
-      const existing = terminal.querySelector('.input-line');
-      if (existing) existing.remove();
-    }
-
+    // Disable input field visually and functionally
     function disableInput(inputEl) {
       inputEl.disabled = true;
       inputEl.style.opacity = '.6';
     }
 
+    // Show status panel if hidden
     function showStatusPanel() {
       if (!gameState.statusVisible) {
         statusPanel.style.display = 'flex';
@@ -293,6 +309,7 @@
       }
     }
 
+    // Create restart button
     function createRestartButton() {
       const btn = document.createElement('button');
       btn.textContent = 'Restart';
@@ -303,6 +320,7 @@
       return btn;
     }
 
+    // Initialize main terminal prompt
     function initMainTerminal() {
       terminal.innerHTML = '';
       gameState.branch = null;
@@ -310,10 +328,7 @@
       gameState.gameOver = false;
       gameState.statusVisible = false;
       statusPanel.style.display = 'none';
-      soldiersLabel.textContent = 'Soldiers';  // Reset label
-      gameState.soldiers = 200;
-      gameState.supplies = 100;
-      gameState.morale = 0;
+
       updateBars();
 
       const title = document.createElement('div');
@@ -326,6 +341,7 @@
       instruction.textContent = 'Please enter command:';
       terminal.appendChild(instruction);
 
+      clearInputLine();
       const { wrapper, input } = createInputLine('C:\\>', 'main-input');
       terminal.appendChild(wrapper);
 
@@ -333,6 +349,7 @@
         if (e.key === 'Enter' && !gameState.gameOver) {
           const cmd = input.value.trim().toLowerCase();
           addUserEcho(cmd);
+
           if (cmd === 'code-1') {
             showStatusPanel();
             initCode1Terminal();
@@ -346,17 +363,17 @@
           updateBars();
         }
       });
+
+      scrollToBottom();
     }
 
+    // Initialize Code-1 terminal scene (choose branch)
     function initCode1Terminal() {
       terminal.innerHTML = '';
       gameState.branch = null;
       gameState.choiceMade = false;
       gameState.gameOver = false;
-      gameState.soldiers = 200;
-      gameState.supplies = 100;
-      gameState.morale = 0;
-      soldiersLabel.textContent = 'Soldiers';  // Reset label for this branch
+
       updateBars();
 
       const title = document.createElement('div');
@@ -384,10 +401,7 @@
       option2.textContent = '2) nuclear warhead';
       terminal.appendChild(option2);
 
-      const option3 = document.createElement('div');
-      option3.className = 'line';
-      option3.textContent = '3) attempt containment';
-      terminal.appendChild(option3);
+      // Option for "attempt containment" will come in next parts, leave out here for now
 
       const spacer = document.createElement('div');
       spacer.className = 'line';
@@ -406,38 +420,39 @@
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
           const val = input.value.trim().toLowerCase();
+
           if (val === 'deploy soldiers') {
             gameState.choiceMade = true;
             gameState.branch = 'deploy_soldiers';
             addUserEcho('deploy soldiers');
             addStyledMessage('Foxtrot-1', 'Platoon mobilized, lethal force authorized');
             enterDeploySoldiersBranch();
-          } else if (val === 'nuclear warhead' || val === 'nuclear') {
+          } else if (val === 'nuclear warhead') {
             gameState.choiceMade = true;
             gameState.gameOver = true;
             addUserEcho('nuclear warhead');
             addStyledMessage('November-2', "Site neutralized good work, you'll be relieved soon");
             showCredits();
             disableInput(input);
-          } else if (val === 'attempt containment') {
-            gameState.choiceMade = true;
-            addUserEcho('attempt containment');
-            showStatusPanel();
-            initContainmentBranch();
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
             unknown.textContent = 'unrecognized command';
             insertAboveInput(unknown);
           }
+
           input.value = '';
           updateBars();
         }
       });
+
+      scrollToBottom();
     }
 
+    // Branch: Deploy Soldiers follow-up orders
     function enterDeploySoldiersBranch() {
-      gameState.choiceMade = false;
+      terminal.innerHTML = '';
+
       updateBars();
 
       const header = document.createElement('div');
@@ -469,12 +484,14 @@
       const { wrapper, input } = createInputLine('CODE-1>', 'deploy-input');
       terminal.appendChild(wrapper);
 
+      gameState.choiceMade = false;
+
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
           const val = input.value.trim().toLowerCase();
           addUserEcho(val);
 
-          if (val === 'fallback') {
+          if (val === 'fallback' || val === '1') {
             gameState.choiceMade = true;
             gameState.morale -= 15;
             addStyledMessage('Foxtrot-1', 'Fallback executed. Breach expanding. Command frustrated.');
@@ -483,8 +500,10 @@
               gameState.morale -= 5;
               addStyledMessage('Foxtrot-1', 'Forces pulling back under heavy pressure. Situation worsening.');
             }
+            updateBars();
             showDeployStatus();
-          } else if (val === 'secure the area') {
+            endDeployBranch(input);
+          } else if (val === 'secure the area' || val === '2') {
             gameState.choiceMade = true;
             gameState.morale += 5;
             addStyledMessage('Foxtrot-1', 'Area secured. Forces holding strong. Casualties minimal.');
@@ -492,7 +511,10 @@
               gameState.supplies -= 10;
               addStyledMessage('Foxtrot-1', 'Small ambush during security sweep, minimal casualties but supplies used.');
             }
-          } else if (val === 'search for intel') {
+            updateBars();
+            showDeployStatus();
+            endDeployBranch(input);
+          } else if (val === 'search for intel' || val === '3') {
             gameState.choiceMade = true;
             if (Math.random() < 0.7) {
               gameState.morale += 10;
@@ -501,7 +523,9 @@
               gameState.morale -= 5;
               addStyledMessage('Foxtrot-1', 'Intel search failed. Encountered heavy resistance, retreating with casualties.');
             }
+            updateBars();
             showDeployStatus();
+            endDeployBranch(input);
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
@@ -510,13 +534,15 @@
             input.value = '';
             return;
           }
-
           input.value = '';
-          updateBars();
+          scrollToBottom();
         }
       });
+
+      scrollToBottom();
     }
 
+    // Show status line after deploy branch choice
     function showDeployStatus() {
       const status = document.createElement('div');
       status.className = 'line';
@@ -525,139 +551,34 @@
       scrollToBottom();
     }
 
-    function initContainmentBranch() {
-      gameState.choiceMade = false;
-      gameState.branch = 'containment';
-      gameState.soldiers = 75; // now called guards
-      gameState.supplies = 68;
-      gameState.morale = 0;
-      updateBars();
-
-      terminal.innerHTML = '';
-
-      // Show branch title and description
-      const title = document.createElement('div');
-      title.className = 'line';
-      title.textContent = '*** CODE-1 TERMINAL - CONTAINMENT BRANCH ***';
-      terminal.appendChild(title);
-
-      const alertDiv = document.createElement('div');
-      alertDiv.className = 'line alert-red';
-      alertDiv.textContent = 'Sierra Command: Containment breach active. Guards deployed to secure vital systems.';
-      terminal.appendChild(alertDiv);
-
-      // Show follow-up choices
-      const header = document.createElement('div');
-      header.className = 'line';
-      header.textContent = 'Choose your next action:';
-      terminal.appendChild(header);
-
-      const option1 = document.createElement('div');
-      option1.className = 'line';
-      option1.textContent = '1) reinforce perimeter';
-      terminal.appendChild(option1);
-
-      const option2 = document.createElement('div');
-      option2.className = 'line';
-      option2.textContent = '2) hack containment systems';
-      terminal.appendChild(option2);
-
-      const option3 = document.createElement('div');
-      option3.className = 'line';
-      option3.textContent = '3) evacuate non-essential personnel';
-      terminal.appendChild(option3);
-
-      const promptLine = document.createElement('div');
-      promptLine.className = 'line';
-      promptLine.textContent = 'Type your choice exactly and press Enter:';
-      terminal.appendChild(promptLine);
-
-      clearInputLine();
-      const { wrapper, input } = createInputLine('CODE-1>', 'containment-input');
-      terminal.appendChild(wrapper);
-
-      // Change status panel soldiers label to "Guards"
-      soldiersLabel.textContent = 'Guards';
-
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
-          const val = input.value.trim().toLowerCase();
-          addUserEcho(val);
-
-          if (val === 'reinforce perimeter') {
-            gameState.choiceMade = true;
-            gameState.morale += 10;
-            gameState.supplies -= 15;
-            addStyledMessage('Command', 'Perimeter reinforced. Guards holding lines but supplies heavily used.');
-            if (Math.random() < 0.4) {
-              gameState.soldiers -= 10;
-              addStyledMessage('Command', 'Small skirmishes occurred. Guard casualties reported.');
-            }
-          } else if (val === 'hack containment systems') {
-            gameState.choiceMade = true;
-            if (Math.random() < 0.7) {
-              gameState.morale += 15;
-              gameState.supplies -= 10;
-              addStyledMessage('Command', 'Containment systems successfully hacked. Breach partially sealed.');
-            } else {
-              gameState.morale -= 10;
-              addStyledMessage('Command', 'Hack attempt failed. Breach spreading faster.');
-              gameState.soldiers -= 15;
-            }
-          } else if (val === 'evacuate non-essential personnel') {
-            gameState.choiceMade = true;
-            gameState.morale -= 5;
-            gameState.supplies += 10;
-            addStyledMessage('Command', 'Non-essential personnel evacuated safely. Supplies conserved.');
-          } else {
-            const unknown = document.createElement('div');
-            unknown.className = 'line';
-            unknown.textContent = 'unrecognized command';
-            insertAboveInput(unknown);
-            input.value = '';
-            return;
-          }
-
-          updateBars();
-
-          if (gameState.soldiers <= 0 || gameState.supplies <= 0 || gameState.morale <= -50) {
-            gameState.gameOver = true;
-            addStyledMessage('System', 'Containment failed. Situation critical. Game over.');
-            showCredits();
-            disableInput(input);
-          } else {
-            addStyledMessage('System', 'Awaiting further orders...');
-            clearInputLine();
-            const { wrapper: newWrapper, input: newInput } = createInputLine('CODE-1>', 'containment-input');
-            terminal.appendChild(newWrapper);
-            newInput.focus();
-            gameState.choiceMade = false;
-
-            newInput.addEventListener('keydown', e => {
-              if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
-                addUserEcho(newInput.value);
-                addStyledMessage('System', 'No further actions implemented yet.');
-                disableInput(newInput);
-                showCredits();
-                gameState.gameOver = true;
-              }
-            });
-          }
-        }
-      });
-    }
-
-    function showCredits() {
+    // End deploy branch: show restart option
+    function endDeployBranch(input) {
+      disableInput(input);
       const credits = document.createElement('div');
-      credits.className = 'credits';
-      credits.textContent = '© 2025 Noble Williams - Military Terminal Decision Game';
+      credits.className = 'line credits';
+      credits.textContent = '--- END OF DEPLOY BRANCH ---  Made by Agent Distania';
       terminal.appendChild(credits);
 
       const restartBtn = createRestartButton();
       terminal.appendChild(restartBtn);
+
+      scrollToBottom();
     }
 
-    // Initialize main terminal on page load
+    // Show game credits & restart option
+    function showCredits() {
+      const credits = document.createElement('div');
+      credits.className = 'line credits';
+      credits.textContent = '--- GAME OVER ---  Made by Agent Distania';
+      terminal.appendChild(credits);
+
+      const restartBtn = createRestartButton();
+      terminal.appendChild(restartBtn);
+
+      scrollToBottom();
+    }
+
+    // Initialize game
     initMainTerminal();
   </script>
 </body>
