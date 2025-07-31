@@ -2,195 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Military Terminal Decision Game</title>
+<title>Code-1</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-  :root {
-    --green: #39ff14;
-    --red: #ff4444;
-    --bg: #001100;
-    --panel-bg: rgba(0, 17, 0, 0.9);
-    --bar-bg: #003300;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    height: 100vh;
-    background: #0b1a0b;
-    color: var(--green);
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  #terminal-wrapper {
-    background: var(--bg);
-    border: 2px solid var(--green);
-    padding: 0;
-    width: 800px;
-    height: 520px;
-    box-shadow: 0 0 16px var(--green);
-    display: flex;
-    overflow: hidden;
-    position: relative;
-  }
-  #status-panel {
-    width: 180px;
-    background: var(--panel-bg);
-    padding: 12px 10px;
-    display: none; /* Hidden initially */
-    flex-direction: column;
-    gap: 12px;
-    border-right: 1px solid var(--green);
-    flex-shrink: 0;
-  }
-  .status-title {
-    font-weight: bold;
-    margin-bottom: 4px;
-    text-align: center;
-    border-bottom: 1px solid var(--green);
-    padding-bottom: 4px;
-  }
-  .bar-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .label-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-  }
-  .bar {
-    position: relative;
-    height: 14px;
-    background: var(--bar-bg);
-    border: 1px solid var(--green);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .bar-inner {
-    height: 100%;
-    background: var(--green);
-    width: 100%;
-    transition: width .3s ease;
-  }
-  .numeric-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .numeric-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-  }
-  .value-box {
-    background: rgba(0, 17, 0, 0.7);
-    padding: 4px 6px;
-    border: 1px solid var(--green);
-    border-radius: 3px;
-    text-align: right;
-    font-weight: bold;
-  }
-  #terminal {
-    flex: 1;
-    padding: 16px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    position: relative;
-  }
-  .line {
-    white-space: pre-wrap;
-    line-height: 1.2;
-  }
-  .input-line {
-    display: flex;
-    align-items: center;
-    margin-top: 6px;
-  }
-  .prompt {
-    user-select: none;
-    margin-right: 8px;
-    flex-shrink: 0;
-  }
-  input {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--green);
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    flex: 1;
-  }
-  .alert-red {
-    color: var(--red);
-    font-weight: bold;
-    border: 1px solid var(--red);
-    padding: 4px;
-  }
-  .sender {
-    font-weight: bold;
-    margin-right: 4px;
-  }
-  .credits {
-    margin-top: 12px;
-    border-top: 1px solid var(--green);
-    padding-top: 8px;
-    font-size: 12px;
-  }
-  .small-note {
-    font-size: 11px;
-    opacity: .8;
-  }
-  button.restart-btn {
-    margin-top: 16px;
-    background: transparent;
-    border: 1px solid var(--green);
-    color: var(--green);
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    padding: 6px 12px;
-    cursor: pointer;
-    border-radius: 3px;
-    align-self: flex-start;
-    transition: background 0.2s ease;
-  }
-  button.restart-btn:hover {
-    background: var(--green);
-    color: #001100;
-  }
+/* Keep all your existing CSS here (unchanged) */
 </style>
 </head>
 <body>
   <div id="terminal-wrapper">
     <div id="status-panel" role="region" aria-label="Game status panel">
-      <div class="status-title">STATUS</div>
-      <div class="bar-wrapper" aria-live="polite">
-        <div class="label-row">
-          <div>Morale</div><div id="morale-value" aria-atomic="true">+0</div>
-        </div>
-        <div class="bar" aria-label="Morale level">
-          <div class="bar-inner" id="morale-bar" style="width:50%;"></div>
-        </div>
-      </div>
-      <div class="bar-wrapper" aria-live="polite">
-        <div class="label-row">
-          <div>Supplies</div><div id="supplies-value" aria-atomic="true">100%</div>
-        </div>
-        <div class="bar" aria-label="Supplies level">
-          <div class="bar-inner" id="supplies-bar" style="width:100%;"></div>
-        </div>
-      </div>
-      <div class="numeric-wrapper" aria-live="polite">
-        <div class="numeric-row">
-          <div>Soldiers</div><div class="value-box" id="soldiers-value" aria-atomic="true">200</div>
-        </div>
-      </div>
-      <div class="small-note">Only first choice per branch accepted.</div>
+      <!-- status panel HTML (unchanged) -->
     </div>
     <div id="terminal" role="log" aria-live="polite" aria-relevant="additions">
       <!-- dynamic content injected here -->
@@ -198,7 +19,7 @@
   </div>
 
   <script>
-    // Cached DOM elements
+    // Cached DOM elements and base game state setup
     const terminal = document.getElementById('terminal');
     const statusPanel = document.getElementById('status-panel');
     const moraleBar = document.getElementById('morale-bar');
@@ -207,7 +28,6 @@
     const suppliesValue = document.getElementById('supplies-value');
     const soldiersValue = document.getElementById('soldiers-value');
 
-    // Game state object
     let gameState = {
       morale: 0,
       supplies: 100,
@@ -218,31 +38,24 @@
       statusVisible: false
     };
 
-    // Helper: Clamp number
     function clamp(num, min, max) {
       return Math.min(Math.max(num, min), max);
     }
 
-    // Update status bars and numeric values
     function updateBars() {
-      let moraleDisplay = clamp(gameState.morale, -100, 100);
-      // Morale bar from 0-100%, 50% = neutral
-      const moralePercent = clamp(50 + moraleDisplay / 2, 0, 100);
+      const moralePercent = clamp(50 + gameState.morale / 2, 0, 100);
       moraleBar.style.width = moralePercent + '%';
       moraleValue.textContent = (gameState.morale >= 0 ? '+' : '') + gameState.morale;
 
       suppliesBar.style.width = clamp(gameState.supplies, 0, 100) + '%';
       suppliesValue.textContent = Math.round(gameState.supplies) + '%';
-
       soldiersValue.textContent = Math.max(0, Math.round(gameState.soldiers));
     }
 
-    // Scroll terminal to bottom
     function scrollToBottom() {
       terminal.scrollTop = terminal.scrollHeight;
     }
 
-    // Insert element before input line or at end
     function insertAboveInput(element) {
       const inputLine = terminal.querySelector('.input-line');
       if (inputLine) terminal.insertBefore(element, inputLine);
@@ -250,7 +63,6 @@
       scrollToBottom();
     }
 
-    // Create user input line with prompt and input
     function createInputLine(promptText, inputId) {
       const wrapper = document.createElement('div');
       wrapper.className = 'input-line';
@@ -267,13 +79,11 @@
       return { wrapper, input };
     }
 
-    // Clear existing input line
     function clearInputLine() {
       const existing = terminal.querySelector('.input-line');
       if (existing) existing.remove();
     }
 
-    // Add a line echoing user input
     function addUserEcho(text) {
       const line = document.createElement('div');
       line.className = 'line';
@@ -281,7 +91,6 @@
       insertAboveInput(line);
     }
 
-    // Add a styled message with sender label
     function addStyledMessage(sender, message) {
       const container = document.createElement('div');
       container.className = 'line';
@@ -295,13 +104,11 @@
       insertAboveInput(container);
     }
 
-    // Disable input field visually and functionally
     function disableInput(inputEl) {
       inputEl.disabled = true;
       inputEl.style.opacity = '.6';
     }
 
-    // Show status panel if hidden
     function showStatusPanel() {
       if (!gameState.statusVisible) {
         statusPanel.style.display = 'flex';
@@ -309,27 +116,103 @@
       }
     }
 
-    // Create restart button
     function createRestartButton() {
       const btn = document.createElement('button');
       btn.textContent = 'Restart';
       btn.className = 'restart-btn';
-      btn.addEventListener('click', () => {
-        initMainTerminal();
-      });
+      btn.addEventListener('click', () => initMainTerminal());
       return btn;
     }
 
-    // Initialize main terminal prompt
+    function showCredits() {
+      const credits = document.createElement('div');
+      credits.className = 'line credits';
+      credits.textContent = '--- GAME OVER --- Made by Agent Distania';
+      terminal.appendChild(credits);
+      terminal.appendChild(createRestartButton());
+      scrollToBottom();
+    }
+
+    async function loadBranchJSON(branchName) {
+      try {
+        const res = await fetch(`branches/${branchName}.json`);
+        const data = await res.json();
+        runBranch(data);
+      } catch (e) {
+        const err = document.createElement('div');
+        err.className = 'line alert-red';
+        err.textContent = 'ERROR: Unable to load branch';
+        terminal.appendChild(err);
+      }
+    }
+
+    function runBranch(branch) {
+      terminal.innerHTML = '';
+      updateBars();
+
+      const intro = document.createElement('div');
+      intro.className = 'line';
+      intro.textContent = branch.introText;
+      terminal.appendChild(intro);
+
+      branch.choices.forEach((choice, idx) => {
+        const opt = document.createElement('div');
+        opt.className = 'line';
+        opt.textContent = `${idx + 1}) ${choice.command}`;
+        terminal.appendChild(opt);
+      });
+
+      const promptLine = document.createElement('div');
+      promptLine.className = 'line';
+      promptLine.textContent = 'Type your choice exactly and press Enter:';
+      terminal.appendChild(promptLine);
+
+      clearInputLine();
+      const { wrapper, input } = createInputLine('CODE-1>', 'branch-input');
+      terminal.appendChild(wrapper);
+
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
+          const val = input.value.trim().toLowerCase();
+          const match = branch.choices.find(c => c.command.toLowerCase() === val);
+
+          if (match) {
+            addUserEcho(val);
+            gameState.morale += match.effect.morale || 0;
+            gameState.supplies += match.effect.supplies || 0;
+            gameState.soldiers += match.effect.personnel || 0;
+            addStyledMessage('Sierra Command', match.message);
+            updateBars();
+            disableInput(input);
+            showCredits();
+          } else {
+            const unknown = document.createElement('div');
+            unknown.className = 'line';
+            unknown.textContent = 'unrecognized command';
+            insertAboveInput(unknown);
+          }
+
+          input.value = '';
+          scrollToBottom();
+        }
+      });
+
+      scrollToBottom();
+    }
+
     function initMainTerminal() {
       terminal.innerHTML = '';
-      gameState.branch = null;
-      gameState.choiceMade = false;
-      gameState.gameOver = false;
-      gameState.statusVisible = false;
-      statusPanel.style.display = 'none';
-
+      gameState = {
+        morale: 0,
+        supplies: 100,
+        soldiers: 200,
+        branch: null,
+        choiceMade: false,
+        gameOver: false,
+        statusVisible: false
+      };
       updateBars();
+      statusPanel.style.display = 'none';
 
       const title = document.createElement('div');
       title.className = 'line';
@@ -352,88 +235,7 @@
 
           if (cmd === 'code-1') {
             showStatusPanel();
-            initCode1Terminal();
-          } else {
-            const unknown = document.createElement('div');
-            unknown.className = 'line';
-            unknown.textContent = 'unrecognized command';
-            insertAboveInput(unknown);
-          }
-          input.value = '';
-          updateBars();
-        }
-      });
-
-      scrollToBottom();
-    }
-
-    // Initialize Code-1 terminal scene (choose branch)
-    function initCode1Terminal() {
-      terminal.innerHTML = '';
-      gameState.branch = null;
-      gameState.choiceMade = false;
-      gameState.gameOver = false;
-
-      updateBars();
-
-      const title = document.createElement('div');
-      title.className = 'line';
-      title.textContent = '*** CODE-1 TERMINAL ***';
-      terminal.appendChild(title);
-
-      const alertDiv = document.createElement('div');
-      alertDiv.className = 'line alert-red';
-      alertDiv.textContent = 'Sierra command: Breach at the Sierra labs, containment impossible, you have the key, deploy soldiers, or nuclear weapons';
-      terminal.appendChild(alertDiv);
-
-      const decisionHeader = document.createElement('div');
-      decisionHeader.className = 'line';
-      decisionHeader.textContent = 'Select one:';
-      terminal.appendChild(decisionHeader);
-
-      const option1 = document.createElement('div');
-      option1.className = 'line';
-      option1.textContent = '1) deploy soldiers';
-      terminal.appendChild(option1);
-
-      const option2 = document.createElement('div');
-      option2.className = 'line';
-      option2.textContent = '2) nuclear warhead';
-      terminal.appendChild(option2);
-
-      // Option for "attempt containment" will come in next parts, leave out here for now
-
-      const spacer = document.createElement('div');
-      spacer.className = 'line';
-      spacer.textContent = '';
-      terminal.appendChild(spacer);
-
-      const promptLine = document.createElement('div');
-      promptLine.className = 'line';
-      promptLine.textContent = 'Type your choice exactly (e.g., "deploy soldiers") and press Enter:';
-      terminal.appendChild(promptLine);
-
-      clearInputLine();
-      const { wrapper, input } = createInputLine('CODE-1>', 'code1-input');
-      terminal.appendChild(wrapper);
-
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
-          const val = input.value.trim().toLowerCase();
-
-          if (val === 'deploy soldiers') {
-            gameState.choiceMade = true;
-            gameState.branch = 'deploy_soldiers';
-            addUserEcho('deploy soldiers');
-            addStyledMessage('Foxtrot-1', 'Platoon mobilized, lethal force authorized');
-            enterDeploySoldiersBranch();
-          } else if (val === 'nuclear warhead') {
-            gameState.choiceMade = true;
-            gameState.gameOver = true;
-            addUserEcho('nuclear warhead');
-            addStyledMessage('November-2', "Site neutralized good work, you'll be relieved soon");
-            showCredits();
-            disableInput(input);
+            loadBranchJSON('initial');
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
@@ -449,136 +251,6 @@
       scrollToBottom();
     }
 
-    // Branch: Deploy Soldiers follow-up orders
-    function enterDeploySoldiersBranch() {
-      terminal.innerHTML = '';
-
-      updateBars();
-
-      const header = document.createElement('div');
-      header.className = 'line';
-      header.textContent = 'Follow-up orders:';
-      terminal.appendChild(header);
-
-      const opt1 = document.createElement('div');
-      opt1.className = 'line';
-      opt1.textContent = '1) fallback';
-      terminal.appendChild(opt1);
-
-      const opt2 = document.createElement('div');
-      opt2.className = 'line';
-      opt2.textContent = '2) secure the area';
-      terminal.appendChild(opt2);
-
-      const opt3 = document.createElement('div');
-      opt3.className = 'line';
-      opt3.textContent = '3) search for intel';
-      terminal.appendChild(opt3);
-
-      const promptLine = document.createElement('div');
-      promptLine.className = 'line';
-      promptLine.textContent = 'Type your choice exactly and press Enter:';
-      terminal.appendChild(promptLine);
-
-      clearInputLine();
-      const { wrapper, input } = createInputLine('CODE-1>', 'deploy-input');
-      terminal.appendChild(wrapper);
-
-      gameState.choiceMade = false;
-
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && !gameState.choiceMade && !gameState.gameOver) {
-          const val = input.value.trim().toLowerCase();
-          addUserEcho(val);
-
-          if (val === 'fallback' || val === '1') {
-            gameState.choiceMade = true;
-            gameState.morale -= 15;
-            addStyledMessage('Foxtrot-1', 'Fallback executed. Breach expanding. Command frustrated.');
-            if (Math.random() < 0.3) {
-              gameState.soldiers -= 20;
-              gameState.morale -= 5;
-              addStyledMessage('Foxtrot-1', 'Forces pulling back under heavy pressure. Situation worsening.');
-            }
-            updateBars();
-            showDeployStatus();
-            endDeployBranch(input);
-          } else if (val === 'secure the area' || val === '2') {
-            gameState.choiceMade = true;
-            gameState.morale += 5;
-            addStyledMessage('Foxtrot-1', 'Area secured. Forces holding strong. Casualties minimal.');
-            if (Math.random() < 0.3) {
-              gameState.supplies -= 10;
-              addStyledMessage('Foxtrot-1', 'Small ambush during security sweep, minimal casualties but supplies used.');
-            }
-            updateBars();
-            showDeployStatus();
-            endDeployBranch(input);
-          } else if (val === 'search for intel' || val === '3') {
-            gameState.choiceMade = true;
-            if (Math.random() < 0.7) {
-              gameState.morale += 10;
-              addStyledMessage('Foxtrot-1', "Subjects 1-100 have proven fruitful in curing [EXPUNGED], however they have become uncontrollable, terminating subjects tomorrow when the cleaners return. The rest of the text is unreadable due to heavy blood. What the hell were they doing here?");
-            } else {
-              gameState.morale -= 5;
-              addStyledMessage('Foxtrot-1', 'Intel search failed. Encountered heavy resistance, retreating with casualties.');
-            }
-            updateBars();
-            showDeployStatus();
-            endDeployBranch(input);
-          } else {
-            const unknown = document.createElement('div');
-            unknown.className = 'line';
-            unknown.textContent = 'unrecognized command';
-            insertAboveInput(unknown);
-            input.value = '';
-            return;
-          }
-          input.value = '';
-          scrollToBottom();
-        }
-      });
-
-      scrollToBottom();
-    }
-
-    // Show status line after deploy branch choice
-    function showDeployStatus() {
-      const status = document.createElement('div');
-      status.className = 'line';
-      status.textContent = `STATUS -- Morale: ${gameState.morale >= 0 ? '+' : ''}${gameState.morale}, Supplies: ${Math.round(gameState.supplies)}%, Soldiers: ${Math.round(gameState.soldiers)}`;
-      terminal.appendChild(status);
-      scrollToBottom();
-    }
-
-    // End deploy branch: show restart option
-    function endDeployBranch(input) {
-      disableInput(input);
-      const credits = document.createElement('div');
-      credits.className = 'line credits';
-      credits.textContent = '--- END OF DEPLOY BRANCH ---  Made by Agent Distania';
-      terminal.appendChild(credits);
-
-      const restartBtn = createRestartButton();
-      terminal.appendChild(restartBtn);
-
-      scrollToBottom();
-    }
-
-    // Show game credits & restart option
-    function showCredits() {
-      const credits = document.createElement('div');
-      credits.className = 'line credits';
-      credits.textContent = '--- GAME OVER ---  Made by Agent Distania';
-      terminal.appendChild(credits);
-
-      const restartBtn = createRestartButton();
-      terminal.appendChild(restartBtn);
-
-      scrollToBottom();
-    }
-
-    // Initialize game
     initMainTerminal();
   </script>
 </body>
