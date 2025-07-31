@@ -364,13 +364,13 @@
             gameState.choiceMade = true;
             gameState.branch = 'deploy_soldiers';
             addUserEcho('deploy soldiers');
-            addStyledMessage('Sierra command', 'Platoon mobilized, lethal force authorized');
+            addStyledMessage('Home-1', 'Platoon mobilized, lethal force authorized');
             enterDeploySoldiersBranch();
             disableInput(input);
           } else if (val === 'nuclear') {
             gameState.choiceMade = true;
             addUserEcho('nuclear');
-            addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
+            addStyledMessage('November-2', "Site neutralized good work, you'll be relieved soon");
             showCredits();
             disableInput(input);
           } else if (val === 'attempt containment') {
