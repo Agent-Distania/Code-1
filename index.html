@@ -183,14 +183,13 @@
   <script>
     const terminal = document.getElementById('terminal');
     let gameState = {
-      morale: 0, // relative modifier
+      morale: 0,
       supplies: 100,
       soldiers: 200,
       branch: null,
       choiceMade: false
     };
 
-    // UI updates for status panel
     function updateBars() {
       const moraleBar = document.getElementById('morale-bar');
       const suppliesBar = document.getElementById('supplies-bar');
@@ -198,7 +197,6 @@
       const suppliesValue = document.getElementById('supplies-value');
       const soldiersValue = document.getElementById('soldiers-value');
 
-      // Morale: centered at 0 => 50% plus/minus
       let moraleDisplay = Math.max(-100, Math.min(100, gameState.morale));
       const moralePercent = Math.max(0, Math.min(100, 50 + moraleDisplay / 2));
       moraleBar.style.width = moralePercent + '%';
@@ -213,16 +211,13 @@
     function createInputLine(promptText, inputId) {
       const wrapper = document.createElement('div');
       wrapper.className = 'input-line';
-
       const prompt = document.createElement('span');
       prompt.className = 'prompt';
       prompt.textContent = promptText;
-
       const input = document.createElement('input');
       input.type = 'text';
       input.id = inputId;
       input.autocomplete = 'off';
-
       wrapper.appendChild(prompt);
       wrapper.appendChild(input);
       setTimeout(() => input.focus(), 40);
@@ -298,7 +293,7 @@
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
-            unknown.textContent = `Unknown command: ${cmd}`;
+            unknown.textContent = 'unrecognized command';
             insertAboveInput(unknown);
           }
           input.value = '';
@@ -364,25 +359,25 @@
             gameState.choiceMade = true;
             gameState.branch = 'deploy_soldiers';
             addUserEcho('deploy soldiers');
-            addStyledMessage('Home-1', 'Platoon mobilized, lethal force authorized');
+            addStyledMessage('Foxtrot-1', 'Platoon mobilized, lethal force authorized');
             enterDeploySoldiersBranch();
             disableInput(input);
           } else if (val === 'nuclear') {
             gameState.choiceMade = true;
             addUserEcho('nuclear');
-            addStyledMessage('November-2', "Site neutralized good work, you'll be relieved soon");
+            addStyledMessage('November-1', "Site neutralized good work, you'll be relieved soon");
             showCredits();
             disableInput(input);
           } else if (val === 'attempt containment') {
             gameState.choiceMade = true;
             gameState.branch = 'containment';
             addUserEcho('attempt containment');
-            addStyledMessage('Sierra command', 'Understood, deploying remaining forces for attempted containment');
+            addStyledMessage('Foxtrot-1', 'Understood, deploying remaining forces for attempted containment');
             disableInput(input);
           } else {
             const unknown = document.createElement('div');
             unknown.className = 'line';
-            unknown.textContent = `Unknown choice: ${val}`;
+            unknown.textContent = 'unrecognized command';
             insertAboveInput(unknown);
           }
           input.value = '';
@@ -392,7 +387,7 @@
     }
 
     function enterDeploySoldiersBranch() {
-      gameState.choiceMade = false; // allow next choice
+      gameState.choiceMade = false;
       updateBars();
 
       const header = document.createElement('div');
@@ -433,12 +428,20 @@
             gameState.choiceMade = true;
             gameState.morale -= 15;
             addStyledMessage('Foxtrot-1', 'Fallback executed. Breach expanding. Command frustrated.');
-            addStyledMessage('Foxtrot-1', 'Forces pulling back under heavy pressure. Situation worsening.');
+            // 30% chance of worse follow-up
+            if (Math.random() < 0.3) {
+              gameState.soldiers -= 20;
+              gameState.morale -= 5;
+              addStyledMessage('Foxtrot-1', 'Forces pulling back under heavy pressure. Situation worsening.');
+            }
           } else if (val === 'secure the area') {
             gameState.choiceMade = true;
             gameState.morale += 5;
             addStyledMessage('Foxtrot-1', 'Area secured. Forces holding strong. Casualties minimal.');
-            addStyledMessage('Foxtrot-1', 'Perimeter stable. Holding position and ready for orders.');
+            if (Math.random() < 0.3) {
+              gameState.supplies -= 10;
+              addStyledMessage('Foxtrot-1', 'Small ambush during security sweep, minimal casualties but supplies used.');
+            }
           } else if (val === 'search for intel') {
             gameState.choiceMade = true;
             if (Math.random() < 0.7) {
@@ -454,7 +457,7 @@
             unknown.textContent = 'unrecognized command';
             insertAboveInput(unknown);
             input.value = '';
-            return; // keep input active
+            return;
           }
 
           input.value = '';
@@ -481,7 +484,7 @@
       scrollToBottom();
     }
 
-    // start
+    // bootstrap
     initMainTerminal();
   </script>
 </body>
