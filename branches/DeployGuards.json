@@ -1,7 +1,5 @@
 {
-  "introText": "Sierra Command: You are the operator assisting a security guard squad at Sierra Lab. Once overlooked and undertrained, this team now seeks redemption by containing the supernatural breach.\n\n" +
-               "Status Update: Morale at 58, Supplies at 49%, Guards count at 40.\n\n" +
-               "Available commands: reinforce defenses, scout ahead, stabilize situation.",
+  "introText": "Sierra Command: You are the operator assisting a security guard squad at Sierra Lab. Once overlooked and undertrained, this team now seeks redemption by containing the supernatural breach.\n\nStatus Update: Morale at 58, Supplies at 49%, Guards count at 40.\n\nAvailable commands: reinforce defenses, scout ahead, stabilize situation.",
   "choices": [
     {
       "command": "reinforce defenses",
@@ -142,530 +140,619 @@
           "next": "medical_arrival"
         }
       ]
+    },
+
+    "vent_sealed": {
+      "introText": "The vents are sealed. Movement in the shafts stops, but the guards begin to feel the heat and discomfort of limited airflow.\nSuddenly, heavy thuds echo down the dark hallways.",
+      "choices": [
+        {
+          "command": "investigate noise",
+          "message": "A fireteam cautiously advances to identify the source of the noise.",
+          "effect": {
+            "morale": -2,
+            "supplies": -5,
+            "guards": -2
+          },
+          "next": "hallway_encounter"
+        },
+        {
+          "command": "hold position",
+          "message": "You instruct the guards to stay put and brace for contact.",
+          "effect": {
+            "morale": 2,
+            "supplies": -3,
+            "guards": 0
+          },
+          "next": "hallway_breach"
+        }
+      ]
+    },
+
+    "traps_activated": {
+      "introText": "The electrical traps hum, casting faint blue light in the dim hallways.\nMoments later, shrieks echo as the first wave of creatures hits the traps.",
+      "choices": [
+        {
+          "command": "finish them",
+          "message": "You order the guards to rush in and finish off the stunned creatures.",
+          "effect": {
+            "morale": 5,
+            "supplies": -10,
+            "guards": -1
+          },
+          "next": "trap_success"
+        },
+        {
+          "command": "wait",
+          "message": "You instruct the guards to wait, letting the traps do the work before moving.",
+          "effect": {
+            "morale": 1,
+            "supplies": -2,
+            "guards": 0
+          },
+          "next": "trap_patience"
+        }
+      ]
+    },
+
+    "ambush_set": {
+      "introText": "The guards take up hidden positions, fingers tight on triggers. The faint glimmer of red eyes emerges from the dark.\nSuddenly, the ambush is sprung!",
+      "choices": [
+        {
+          "command": "fire at will",
+          "message": "The hallways erupt with gunfire and shouting. Several creatures fall instantly.",
+          "effect": {
+            "morale": 6,
+            "supplies": -12,
+            "guards": -2
+          },
+          "next": "ambush_success"
+        },
+        {
+          "command": "fallback after strike",
+          "message": "The guards execute a hit-and-run attack, retreating to safer ground after the first volley.",
+          "effect": {
+            "morale": 3,
+            "supplies": -6,
+            "guards": 0
+          },
+          "next": "fallback_safety"
+        }
+      ]
+    },
+
+    "waiting_backup": {
+      "introText": "Reinforcements are delayed. The sound of distant snarls grows closer.\nThe guards grip their weapons tighter, fear and determination in their eyes.",
+      "choices": [
+        {
+          "command": "fortify",
+          "message": "You direct the squad to double barricades and prepare fallback points.",
+          "effect": {
+            "morale": 3,
+            "supplies": -8,
+            "guards": 0
+          },
+          "next": "fortify_hold"
+        },
+        {
+          "command": "attempt rescue",
+          "message": "You send a small team to rescue trapped civilians deeper in the lab.",
+          "effect": {
+            "morale": 5,
+            "supplies": -15,
+            "guards": -3
+          },
+          "next": "rescue_mission"
+        }
+      ]
+    },
+
+    "defense_ready": {
+      "introText": "The defensive perimeter is set. Motion sensors beep softly as shadows flicker in the distance.",
+      "choices": [
+        {
+          "command": "hold fire",
+          "message": "You instruct the guards to wait and conserve ammunition for a clear target.",
+          "effect": {
+            "morale": 1,
+            "supplies": -1,
+            "guards": 0
+          },
+          "next": "silent_tension"
+        },
+        {
+          "command": "open fire",
+          "message": "You authorize suppressive fire into the darkness, hoping to scare off hostiles.",
+          "effect": {
+            "morale": 2,
+            "supplies": -10,
+            "guards": 0
+          },
+          "next": "provoked_attack"
+        }
+      ]
+    },
+
+    "attack_launched": {
+      "introText": "The surprise attack catches several creatures unprepared. Red eyes vanish into the dark, but not before a skirmish breaks out.",
+      "choices": [
+        {
+          "command": "pursue",
+          "message": "You urge the guards to chase the retreating hostiles.",
+          "effect": {
+            "morale": 4,
+            "supplies": -15,
+            "guards": -3
+          },
+          "next": "dark_corridor"
+        },
+        {
+          "command": "regroup",
+          "message": "You recall the squad to regroup and assess the situation.",
+          "effect": {
+            "morale": 2,
+            "supplies": -5,
+            "guards": 0
+          },
+          "next": "reassessment"
+        }
+      ]
+    },
+
+    "hallway_encounter": {
+      "introText": "The fireteam advances through the flickering hallway. A shape suddenly drops from the ceiling—it's a malformed vampire lunging at them!",
+      "choices": [
+        {
+          "command": "shoot",
+          "message": "A burst of gunfire echoes. The creature is riddled with bullets but not before slashing one guard.",
+          "effect": {
+            "morale": -2,
+            "supplies": -5,
+            "guards": -1
+          },
+          "next": "injury_treatment"
+        },
+        {
+          "command": "fall back",
+          "message": "The team retreats quickly. You hear screeches from the darkness as the creature vanishes back into the vents.",
+          "effect": {
+            "morale": 1,
+            "supplies": -2,
+            "guards": 0
+          },
+          "next": "fallback_safety"
+        }
+      ]
+    },
+
+    "hallway_breach": {
+      "introText": "The guards hold position. Moments later, the door buckles and three creatures rush in!",
+      "choices": [
+        {
+          "command": "fire at will",
+          "message": "Muzzle flashes fill the hall. Two creatures fall, but one guard is dragged into the darkness.",
+          "effect": {
+            "morale": -3,
+            "supplies": -10,
+            "guards": -1
+          },
+          "next": "creature_aftermath"
+        },
+        {
+          "command": "use stun grenades",
+          "message": "The hall fills with blinding light and concussive shock. The creatures flee screeching into the vents.",
+          "effect": {
+            "morale": 4,
+            "supplies": -8,
+            "guards": 0
+          },
+          "next": "temporary_relief"
+        }
+      ]
+    },
+
+    "trap_success": {
+      "introText": "The guards finish the stunned creatures. Burned and twitching bodies lie in the corridor. The squad feels a surge of confidence.",
+      "choices": [
+        {
+          "command": "advance",
+          "message": "The team cautiously moves deeper into the facility.",
+          "effect": {
+            "morale": 3,
+            "supplies": -5,
+            "guards": 0
+          },
+          "next": "dark_corridor"
+        },
+        {
+          "command": "hold",
+          "message": "The guards hold their position and listen for any further activity.",
+          "effect": {
+            "morale": 1,
+            "supplies": -2,
+            "guards": 0
+          },
+          "next": "silent_tension"
+        }
+      ]
+    },
+
+    "trap_patience": {
+      "introText": "You wait as the traps spark and hiss. No more movement. A tense silence fills the halls.",
+      "choices": [
+        {
+          "command": "inspect area",
+          "message": "The guards check the hallway—bodies are gone. Something dragged them away.",
+          "effect": {
+            "morale": -2,
+            "supplies": -3,
+            "guards": 0
+          },
+          "next": "unnerving_find"
+        },
+        {
+          "command": "reset traps",
+          "message": "You reset and reinforce the traps, ensuring no breach from this corridor for now.",
+          "effect": {
+            "morale": 2,
+            "supplies": -4,
+            "guards": 0
+          },
+          "next": "fortify_hold"
+        }
+      ]
+    },
+
+    "ambush_success": {
+      "introText": "The ambush is a success! Red mist fills the hall as the creatures fall. Guards cheer—they finally feel like real defenders.",
+      "choices": [
+        {
+          "command": "press advantage",
+          "message": "You lead the guards forward to reclaim more of the lab.",
+          "effect": {
+            "morale": 6,
+            "supplies": -8,
+            "guards": -2
+          },
+          "next": "dark_corridor"
+        },
+        {
+          "command": "secure fallen",
+          "message": "You secure the area, recover ammo, and check on the wounded.",
+          "effect": {
+            "morale": 4,
+            "supplies": 5,
+            "guards": 0
+          },
+          "next": "reassessment"
+        }
+      ]
+    },
+
+    "fallback_safety": {
+      "introText": "The squad retreats to a safer room behind heavy doors. You hear distant scratching and muffled screams. The team catches its breath.",
+      "choices": [
+        {
+          "command": "lock down",
+          "message": "You seal the doors, buying time to plan the next move.",
+          "effect": {
+            "morale": 2,
+            "supplies": -1,
+            "guards": 0
+          },
+          "next": "reassessment"
+        },
+        {
+          "command": "radio command",
+          "message": "You report your situation to Sierra Command. They promise remote camera feeds to help guide your next step.",
+          "effect": {
+            "morale": 3,
+            "supplies": -2,
+            "guards": 0
+          },
+          "next": "camera_guidance"
+        }
+      ]
+    },
+
+    "rescue_mission": {
+      "introText": "The rescue team moves out. Their flashlights flicker in the long dark hall.\nMoments later, gunfire erupts and comms are filled with screams!",
+      "choices": [
+        {
+          "command": "send reinforcements",
+          "message": "You dispatch two more guards to assist the rescue, risking further losses.",
+          "effect": {
+            "morale": 2,
+            "supplies": -6,
+            "guards": -2
+          },
+          "next": "rescue_outcome"
+        },
+        {
+          "command": "abort mission",
+          "message": "You order the rescue team to retreat, leaving civilians behind to survive.",
+          "effect": {
+            "morale": -5,
+            "supplies": -2,
+            "guards": 0
+          },
+          "next": "morale_drop"
+        }
+      ]
+    },
+
+    "dark_corridor": {
+      "introText": "The guards move into a long, dark corridor. Emergency lights flicker.\nA foul smell fills the air—this must lead to the heart of the outbreak.",
+      "choices": [
+        {
+          "command": "advance quietly",
+          "message": "The guards creep forward, hearts pounding. You hear whispers that aren’t human.",
+          "effect": {
+            "morale": -1,
+            "supplies": -3,
+            "guards": 0
+          },
+          "next": "nest_discovery"
+        },
+        {
+          "command": "throw flares",
+          "message": "Red flares illuminate the hall, revealing blood trails and claw marks.",
+          "effect": {
+            "morale": 3,
+            "supplies": -2,
+            "guards": 0
+          },
+          "next": "nest_discovery"
+        }
+      ]
+    },
+
+    "nest_discovery": {
+      "introText": "The guards discover a massive vampire nest in the old containment chamber.\nEgg-like cocoons pulse on the walls, and dozens of glowing eyes peer from the dark.",
+      "choices": [
+        {
+          "command": "set explosives",
+          "message": "You order explosives planted while guards hold the creatures back.",
+          "effect": {
+            "morale": 5,
+            "supplies": -10,
+            "guards": -3
+          },
+          "next": "explosive_outcome"
+        },
+        {
+          "command": "open fire",
+          "message": "All guns blaze as the guards launch an all-out assault on the nest.",
+          "effect": {
+            "morale": -5,
+            "supplies": -20,
+            "guards": -8
+          },
+          "next": "desperate_fight"
+        }
+      ]
+    },
+
+    "explosive_outcome": {
+      "introText": "Explosives detonate, fire tearing through the nest. Shrill screeches echo before silence.\nThe surviving guards cheer, knowing this is a major victory.",
+      "choices": [
+        {
+          "command": "extract",
+          "message": "You order an immediate extraction before reinforcements arrive.",
+          "effect": {
+            "morale": 7,
+            "supplies": -8,
+            "guards": 0
+          },
+          "next": "game_over_success"
+        },
+        {
+          "command": "search for intel",
+          "message": "You command a search of the nest ruins for valuable data or survivors.",
+          "effect": {
+            "morale": 3,
+            "supplies": -5,
+            "guards": -1
+          },
+          "next": "intel_found"
+        }
+      ]
+    },
+
+    "desperate_fight": {
+      "introText": "The all-out fight leaves the squad battered. Many guards fall but the nest is destroyed.",
+      "choices": [
+        {
+          "command": "regroup",
+          "message": "You pull back and regroup, tallying losses and planning extraction.",
+          "effect": {
+            "morale": -2,
+            "supplies": -10,
+            "guards": -5
+          },
+          "next": "fallback_safety"
+        },
+        {
+          "command": "hold position",
+          "message": "You command the remaining guards to hold their ground until help arrives.",
+          "effect": {
+            "morale": -3,
+            "supplies": -8,
+            "guards": -3
+          },
+          "next": "game_over_failure"
+        }
+      ]
+    },
+
+    "reassessment": {
+      "introText": "After the skirmish, you reassess the situation. Supplies are low, morale shaky, but the guards remain ready for your orders.",
+      "choices": [
+        {
+          "command": "rearm and resupply",
+          "message": "You organize a resupply effort to restock ammunition and medical supplies.",
+          "effect": {
+            "morale": 3,
+            "supplies": 15,
+            "guards": 0
+          },
+          "next": "fortified_position"
+        },
+        {
+          "command": "call for evac",
+          "message": "You request an emergency evacuation due to mounting casualties and dwindling supplies.",
+          "effect": {
+            "morale": -2,
+            "supplies": 0,
+            "guards": 0
+          },
+          "next": "game_over_evacuate"
+        }
+      ]
+    },
+
+    "morale_drop": {
+      "introText": "Morale drops sharply as news of abandoned civilians spreads. Guards question the mission's purpose.",
+      "choices": [
+        {
+          "command": "rally troops",
+          "message": "You give an impassioned speech reminding them of their duty and honor.",
+          "effect": {
+            "morale": 4,
+            "supplies": 0,
+            "guards": 0
+          },
+          "next": "fortified_position"
+        },
+        {
+          "command": "accept failure",
+          "message": "You order the remaining guards to pull back and abandon the facility.",
+          "effect": {
+            "morale": -5,
+            "supplies": 0,
+            "guards": 0
+          },
+          "next": "game_over_failure"
+        }
+      ]
+    },
+
+    "medical_arrival": {
+      "introText": "Medical teams arrive, treating wounded and stabilizing conditions. The guards breathe easier with hope on the horizon.",
+      "choices": [
+        {
+          "command": "push forward",
+          "message": "You order the squad to continue their mission with renewed vigor.",
+          "effect": {
+            "morale": 5,
+            "supplies": -10,
+            "guards": 0
+          },
+          "next": "dark_corridor"
+        },
+        {
+          "command": "rest and recover",
+          "message": "You decide to hold position and give guards time to recover fully.",
+          "effect": {
+            "morale": 3,
+            "supplies": -5,
+            "guards": 0
+          },
+          "next": "fortified_position"
+        }
+      ]
+    },
+
+    "camera_guidance": {
+      "introText": "Remote cameras feed images to your console. You see corridors swarming with creatures, flickering lights, and possible safe paths.",
+      "choices": [
+        {
+          "command": "guide squad",
+          "message": "You direct guards using camera feeds to avoid hotspots and find survivors.",
+          "effect": {
+            "morale": 4,
+            "supplies": -5,
+            "guards": 0
+          },
+          "next": "rescue_mission"
+        },
+        {
+          "command": "focus on defense",
+          "message": "You keep the squad holding strong while gathering more intel.",
+          "effect": {
+            "morale": 2,
+            "supplies": -3,
+            "guards": 0
+          },
+          "next": "fortified_position"
+        }
+      ]
+    },
+
+    "unnerving_find": {
+      "introText": "The area is eerily empty. Scratches on the walls suggest the creatures might be regrouping nearby.",
+      "choices": [
+        {
+          "command": "set traps",
+          "message": "You place traps in anticipation of a counterattack.",
+          "effect": {
+            "morale": 3,
+            "supplies": -7,
+            "guards": 0
+          },
+          "next": "fortify_hold"
+        },
+        {
+          "command": "retreat",
+          "message": "You call for a tactical retreat to safer ground.",
+          "effect": {
+            "morale": 1,
+            "supplies": -5,
+            "guards": 0
+          },
+          "next": "fallback_safety"
+        }
+      ]
+    },
+
+    "intel_found": {
+      "introText": "Data recovered from the nest reveals new enemy weaknesses and possible origins. This intelligence could turn the tide.",
+      "choices": [
+        {
+          "command": "send report",
+          "message": "You transmit the data to command, hoping for reinforcements.",
+          "effect": {
+            "morale": 5,
+            "supplies": 0,
+            "guards": 0
+          },
+          "next": "waiting_backup"
+        },
+        {
+          "command": "keep searching",
+          "message": "You push further, eager to gather even more intelligence.",
+          "effect": {
+            "morale": 2,
+            "supplies": -5,
+            "guards": -1
+          },
+          "next": "dark_corridor"
+        }
+      ]
+    },
+
+    "game_over_success": {
+      "introText": "Mission Success! The lab is contained and reinforcements secure the area. Your leadership saved many lives.\n\nCongratulations, Commander.",
+      "choices": []
+    },
+
+    "game_over_failure": {
+      "introText": "Mission Failed. The creatures overwhelmed your forces, and the lab falls into darkness. Your team paid the ultimate price.\n\nGame Over.",
+      "choices": []
+    },
+
+    "game_over_evacuate": {
+      "introText": "Evacuation approved. The squad retreats safely, but the breach remains active.\n\nMission deferred. Lives saved, but the threat persists.",
+      "choices": []
     }
   }
 }
-{
-  "vent_sealed": {
-    "introText": "The vents are sealed. Movement in the shafts stops, but the guards begin to feel the heat and discomfort of limited airflow.\nSuddenly, heavy thuds echo down the dark hallways.",
-    "choices": [
-      {
-        "command": "investigate noise",
-        "message": "A fireteam cautiously advances to identify the source of the noise.",
-        "effect": {
-          "morale": -2,
-          "supplies": -5,
-          "guards": -2
-        },
-        "next": "hallway_encounter"
-      },
-      {
-        "command": "hold position",
-        "message": "You instruct the guards to stay put and brace for contact.",
-        "effect": {
-          "morale": 2,
-          "supplies": -3,
-          "guards": 0
-        },
-        "next": "hallway_breach"
-      }
-    ]
-  },
-
-  "traps_activated": {
-    "introText": "The electrical traps hum, casting faint blue light in the dim hallways.\nMoments later, shrieks echo as the first wave of creatures hits the traps.",
-    "choices": [
-      {
-        "command": "finish them",
-        "message": "You order the guards to rush in and finish off the stunned creatures.",
-        "effect": {
-          "morale": 5,
-          "supplies": -10,
-          "guards": -1
-        },
-        "next": "trap_success"
-      },
-      {
-        "command": "wait",
-        "message": "You instruct the guards to wait, letting the traps do the work before moving.",
-        "effect": {
-          "morale": 1,
-          "supplies": -2,
-          "guards": 0
-        },
-        "next": "trap_patience"
-      }
-    ]
-  },
-
-  "ambush_set": {
-    "introText": "The guards take up hidden positions, fingers tight on triggers. The faint glimmer of red eyes emerges from the dark.\nSuddenly, the ambush is sprung!",
-    "choices": [
-      {
-        "command": "fire at will",
-        "message": "The hallways erupt with gunfire and shouting. Several creatures fall instantly.",
-        "effect": {
-          "morale": 6,
-          "supplies": -12,
-          "guards": -2
-        },
-        "next": "ambush_success"
-      },
-      {
-        "command": "fallback after strike",
-        "message": "The guards execute a hit-and-run attack, retreating to safer ground after the first volley.",
-        "effect": {
-          "morale": 3,
-          "supplies": -6,
-          "guards": 0
-        },
-        "next": "fallback_safety"
-      }
-    ]
-  },
-
-  "waiting_backup": {
-    "introText": "Reinforcements are delayed. The sound of distant snarls grows closer.\nThe guards grip their weapons tighter, fear and determination in their eyes.",
-    "choices": [
-      {
-        "command": "fortify",
-        "message": "You direct the squad to double barricades and prepare fallback points.",
-        "effect": {
-          "morale": 3,
-          "supplies": -8,
-          "guards": 0
-        },
-        "next": "fortify_hold"
-      },
-      {
-        "command": "attempt rescue",
-        "message": "You send a small team to rescue trapped civilians deeper in the lab.",
-        "effect": {
-          "morale": 5,
-          "supplies": -15,
-          "guards": -3
-        },
-        "next": "rescue_mission"
-      }
-    ]
-  },
-
-  "defense_ready": {
-    "introText": "The defensive perimeter is set. Motion sensors beep softly as shadows flicker in the distance.",
-    "choices": [
-      {
-        "command": "hold fire",
-        "message": "You instruct the guards to wait and conserve ammunition for a clear target.",
-        "effect": {
-          "morale": 1,
-          "supplies": -1,
-          "guards": 0
-        },
-        "next": "silent_tension"
-      },
-      {
-        "command": "open fire",
-        "message": "You authorize suppressive fire into the darkness, hoping to scare off hostiles.",
-        "effect": {
-          "morale": 2,
-          "supplies": -10,
-          "guards": 0
-        },
-        "next": "provoked_attack"
-      }
-    ]
-  },
-
-  "attack_launched": {
-    "introText": "The surprise attack catches several creatures unprepared. Red eyes vanish into the dark, but not before a skirmish breaks out.",
-    "choices": [
-      {
-        "command": "pursue",
-        "message": "You urge the guards to chase the retreating hostiles.",
-        "effect": {
-          "morale": 4,
-          "supplies": -15,
-          "guards": -3
-        },
-        "next": "dark_corridor"
-      },
-      {
-        "command": "regroup",
-        "message": "You recall the squad to regroup and assess the situation.",
-        "effect": {
-          "morale": 2,
-          "supplies": -5,
-          "guards": 0
-        },
-        "next": "reassessment"
-      }
-    ]
-  }
-}
-{
-  "hallway_encounter": {
-    "introText": "The fireteam advances through the flickering hallway. A shape suddenly drops from the ceiling—it's a malformed vampire lunging at them!",
-    "choices": [
-      {
-        "command": "shoot",
-        "message": "A burst of gunfire echoes. The creature is riddled with bullets but not before slashing one guard.",
-        "effect": {
-          "morale": -2,
-          "supplies": -5,
-          "guards": -1
-        },
-        "next": "injury_treatment"
-      },
-      {
-        "command": "fall back",
-        "message": "The team retreats quickly. You hear screeches from the darkness as the creature vanishes back into the vents.",
-        "effect": {
-          "morale": 1,
-          "supplies": -2,
-          "guards": 0
-        },
-        "next": "fallback_safety"
-      }
-    ]
-  },
-
-  "hallway_breach": {
-    "introText": "The guards hold position. Moments later, the door buckles and three creatures rush in!",
-    "choices": [
-      {
-        "command": "fire at will",
-        "message": "Muzzle flashes fill the hall. Two creatures fall, but one guard is dragged into the darkness.",
-        "effect": {
-          "morale": -3,
-          "supplies": -10,
-          "guards": -1
-        },
-        "next": "creature_aftermath"
-      },
-      {
-        "command": "use stun grenades",
-        "message": "The hall fills with blinding light and concussive shock. The creatures flee screeching into the vents.",
-        "effect": {
-          "morale": 4,
-          "supplies": -8,
-          "guards": 0
-        },
-        "next": "temporary_relief"
-      }
-    ]
-  },
-
-  "trap_success": {
-    "introText": "The guards finish the stunned creatures. Burned and twitching bodies lie in the corridor. The squad feels a surge of confidence.",
-    "choices": [
-      {
-        "command": "advance",
-        "message": "The team cautiously moves deeper into the facility.",
-        "effect": {
-          "morale": 3,
-          "supplies": -5,
-          "guards": 0
-        },
-        "next": "dark_corridor"
-      },
-      {
-        "command": "hold",
-        "message": "The guards hold their position and listen for any further activity.",
-        "effect": {
-          "morale": 1,
-          "supplies": -2,
-          "guards": 0
-        },
-        "next": "silent_tension"
-      }
-    ]
-  },
-
-  "trap_patience": {
-    "introText": "You wait as the traps spark and hiss. No more movement. A tense silence fills the halls.",
-    "choices": [
-      {
-        "command": "inspect area",
-        "message": "The guards check the hallway—bodies are gone. Something dragged them away.",
-        "effect": {
-          "morale": -2,
-          "supplies": -3,
-          "guards": 0
-        },
-        "next": "unnerving_find"
-      },
-      {
-        "command": "reset traps",
-        "message": "You reset and reinforce the traps, ensuring no breach from this corridor for now.",
-        "effect": {
-          "morale": 2,
-          "supplies": -4,
-          "guards": 0
-        },
-        "next": "fortify_hold"
-      }
-    ]
-  },
-
-  "ambush_success": {
-    "introText": "The ambush is a success! Red mist fills the hall as the creatures fall. Guards cheer—they finally feel like real defenders.",
-    "choices": [
-      {
-        "command": "press advantage",
-        "message": "You lead the guards forward to reclaim more of the lab.",
-        "effect": {
-          "morale": 6,
-          "supplies": -8,
-          "guards": -2
-        },
-        "next": "dark_corridor"
-      },
-      {
-        "command": "secure fallen",
-        "message": "You secure the area, recover ammo, and check on the wounded.",
-        "effect": {
-          "morale": 4,
-          "supplies": 5,
-          "guards": 0
-        },
-        "next": "reassessment"
-      }
-    ]
-  },
-
-  "fallback_safety": {
-    "introText": "The squad retreats to a safer room behind heavy doors. You hear distant scratching and muffled screams. The team catches its breath.",
-    "choices": [
-      {
-        "command": "lock down",
-        "message": "You seal the doors, buying time to plan the next move.",
-        "effect": {
-          "morale": 2,
-          "supplies": -1,
-          "guards": 0
-        },
-        "next": "reassessment"
-      },
-      {
-        "command": "radio command",
-        "message": "You report your situation to Sierra Command. They promise remote camera feeds to help guide your next step.",
-        "effect": {
-          "morale": 3,
-          "supplies": -2,
-          "guards": 0
-        },
-        "next": "camera_guidance"
-      }
-    ]
-  },
-
-  "rescue_mission": {
-    "introText": "The rescue team moves out. Their flashlights flicker in the long dark hall.\nMoments later, gunfire erupts and comms are filled with screams!",
-    "choices": [
-      {
-        "command": "send reinforcements",
-        "message": "You dispatch two more guards to assist the rescue, risking further losses.",
-        "effect": {
-          "morale": 2,
-          "supplies": -6,
-          "guards": -2
-        },
-        "next": "rescue_outcome"
-      },
-      {
-        "command": "abort mission",
-        "message": "You order the rescue team to retreat, leaving civilians behind to survive.",
-        "effect": {
-          "morale": -5,
-          "supplies": -2,
-          "guards": 0
-        },
-        "next": "morale_drop"
-      }
-    ]
-  }
-}
-{
-  "dark_corridor": {
-    "introText": "The guards move into a long, dark corridor. Emergency lights flicker.\nA foul smell fills the air—this must lead to the heart of the outbreak.",
-    "choices": [
-      {
-        "command": "advance quietly",
-        "message": "The guards creep forward, hearts pounding. You hear whispers that aren’t human.",
-        "effect": {
-          "morale": -1,
-          "supplies": -3,
-          "guards": 0
-        },
-        "next": "nest_discovery"
-      },
-      {
-        "command": "throw flares",
-        "message": "Red flares illuminate the hall, revealing blood trails and claw marks.",
-        "effect": {
-          "morale": 3,
-          "supplies": -2,
-          "guards": 0
-        },
-        "next": "nest_discovery"
-      }
-    ]
-  },
-
-  "nest_discovery": {
-    "introText": "The guards discover a massive vampire nest in the old containment chamber.\nEgg-like cocoons pulse on the walls, and dozens of glowing eyes peer from the dark.",
-    "choices": [
-      {
-        "command": "set explosives",
-        "message": "You order explosives planted while guards hold the creatures back.",
-        "effect": {
-          "morale": 5,
-          "supplies": -10,
-          "guards": -3
-        },
-        "next": "explosive_outcome"
-      },
-      {
-        "command": "open fire",
-        "message": "All guns blaze as the guards launch an all-out assault on the nest.",
-        "effect": {
-          "morale": -5,
-          "supplies": -20,
-          "guards": -8
-        },
-        "next": "desperate_fight"
-      }
-    ]
-  },
-
-  "explosive_outcome": {
-    "introText": "Explosives detonate, fire tearing through the nest. Shrill screeches echo before silence.\nThe surviving guards cheer, knowing this is a major victory.",
-    "choices": [
-      {
-        "command": "extract",
-        "message": "You call for evac and begin extraction of the remaining guards.",
-        "effect": {
-          "morale": 5,
-          "supplies": -2,
-          "guards": 0
-        },
-        "next": "game_over_success"
-      }
-    ]
-  },
-
-  "desperate_fight": {
-    "introText": "The all-out attack triggers a brutal melee.\nThe guards take heavy losses, but the nest is eventually cleared.",
-    "choices": [
-      {
-        "command": "extract wounded",
-        "message": "Evac teams arrive to pull out the survivors.",
-        "effect": {
-          "morale": -3,
-          "supplies": -5,
-          "guards": -5
-        },
-        "next": "game_over_costly"
-      }
-    ]
-  },
-
-  "reassessment": {
-    "introText": "The guards regroup and await your next command.\nThey’ve earned some redemption, but danger still lurks nearby.",
-    "choices": [
-      {
-        "command": "sweep remaining halls",
-        "message": "You send the guards to finish clearing the lab.",
-        "effect": {
-          "morale": 2,
-          "supplies": -8,
-          "guards": -2
-        },
-        "next": "nest_discovery"
-      },
-      {
-        "command": "call evac",
-        "message": "You decide the risk is too high. Requesting immediate extraction.",
-        "effect": {
-          "morale": 0,
-          "supplies": -2,
-          "guards": 0
-        },
-        "next": "game_over_evacuate"
-      }
-    ]
-  },
-
-  "camera_guidance": {
-    "introText": "Sierra Command provides remote camera feeds.\nYou can now see movement patterns and hidden corridors.",
-    "choices": [
-      {
-        "command": "coordinate attack",
-        "message": "Using camera intel, you guide the guards to ambush unsuspecting creatures.",
-        "effect": {
-          "morale": 4,
-          "supplies": -6,
-          "guards": -1
-        },
-        "next": "ambush_success"
-      },
-      {
-        "command": "avoid enemies",
-        "message": "You navigate the guards through hidden routes, avoiding most fights.",
-        "effect": {
-          "morale": 2,
-          "supplies": -2,
-          "guards": 0
-        },
-        "next": "dark_corridor"
-      }
-    ]
-  },
-
-  "unnerving_find": {
-    "introText": "The guards find that the missing bodies were taken deeper into the lab.\nBlood trails vanish into a floor hatch leading below.",
-    "choices": [
-      {
-        "command": "descend",
-        "message": "You order a descent into the sublevel—where the infection began.",
-        "effect": {
-          "morale": -2,
-          "supplies": -5,
-          "guards": 0
-        },
-        "next": "nest_discovery"
-      },
-      {
-        "command": "seal hatch",
-        "message": "You weld the hatch shut. Whatever’s below stays below.",
-        "effect": {
-          "morale": 3,
-          "supplies": -3,
-          "guards": 0
-        },
-        "next": "reassessment"
-      }
-    ]
-  },
-
-  "game_over_success": {
-    "introText": "GAME OVER: SUCCESS\n\nThe guards have redeemed themselves, destroying the nest and containing the outbreak.\nMorale soars as extraction helicopters carry survivors to safety.",
-    "choices": []
-  },
-
-  "game_over_costly": {
-    "introText": "GAME OVER: COSTLY VICTORY\n\nThe lab is purged, but at a terrible cost.\nOnly a handful of guards survive to tell the tale of Sierra Lab.",
-    "choices": []
-  },
-
-  "game_over_evacuate": {
-    "introText": "GAME OVER: EVACUATION\n\nThe guards abandon the facility, leaving parts of the outbreak contained but unresolved.\nSierra Command will handle cleanup… at an unknown future cost.",
-    "choices": []
-  },
-
-  "morale_drop": {
-    "introText": "GAME OVER: MORALE COLLAPSE\n\nYour refusal to rescue civilians destroys guard morale.\nThey abandon posts, and the lab is lost to the darkness.",
-    "choices": []
-  }
-}
-
